@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "460169392818",
+    "project_id": "fossil-world",
+    "storage_bucket": "fossil-world.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:460169392818:android:ff4b61f26d90b6ce794fab",
+        "android_client_info": {
+          "package_name": "com.example.mapbox_navigator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "460169392818-nng9be14d4ieq35k11jn9e5llarsklu3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiQUunopMU4tv3bY8MCQt--SSSgeNRbyE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "460169392818-nng9be14d4ieq35k11jn9e5llarsklu3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
