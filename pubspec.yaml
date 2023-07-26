@@ -56,7 +56,6 @@ dependencies:
       ref: V4
       path: packages/location
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

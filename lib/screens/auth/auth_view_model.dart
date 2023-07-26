@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../model/user_model.dart';
 import '../../repository/auth_repository.dart';
 import 'login_view.dart';
-//Aa
+
 class AuthViewModel extends GetxController{
   FirebaseAuth _auth = FirebaseAuth.instance;
   FireStoreUser _user = FireStoreUser();

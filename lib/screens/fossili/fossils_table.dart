@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:mapbox_navigator/model/fossil.dart';
+import 'package:mapbox_navigator/screens/fossili/dettagli_fossile.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
+import '../../main.dart';
 import '../../widgets/navbar.dart';
 
 
@@ -14,13 +18,11 @@ class FossilsTable extends StatefulWidget {
 }
 
 class _FossilsTableState extends State<FossilsTable> {
-  final viewModel = FossilViewModel();
-  List<FossilModel> lista = [];
+
 
   @override
   void initState() {
     super.initState();
-    lista = FossilViewModel().fossilModel;
 
   }
 
@@ -84,7 +86,7 @@ class _FossilsTableState extends State<FossilsTable> {
     return Container(
       height: 550,
       child: ListView.separated(
-        itemCount: lista.length,
+        itemCount: fossili.length,
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
           return GestureDetector(
@@ -105,7 +107,7 @@ class _FossilsTableState extends State<FossilsTable> {
                       AspectRatio(aspectRatio: 1/1,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(25),
-                          child: Image.network(lista[index].immagine.toString(),
+                          child: Image.network(fossili[index].immagine.toString(),
                             fit: BoxFit.cover,),
                         ),),
                       const SizedBox(width: 10 ,),
@@ -114,15 +116,15 @@ class _FossilsTableState extends State<FossilsTable> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(lista[index].nome.toString(),style: const TextStyle(color: Colors.black54,fontSize: 14,fontWeight: FontWeight.bold),),
+                            Text(fossili[index].nome.toString(),style: const TextStyle(color: Colors.black54,fontSize: 14,fontWeight: FontWeight.bold),),
                             const SizedBox(height: 2,),
-                            Text("${lista[index]
+                            Text("${fossili[index]
                                 .descrizione}",style: const TextStyle(color: Colors.black54,fontSize: 12,fontWeight: FontWeight.w500),),
                             const SizedBox(height: 5,),
                             cardButtons(Icons.location_on, 'Map'),
                             ],),),
                       const SizedBox(width: 27,),
-                      IconButton(onPressed: (){},
+                      IconButton(onPressed: (){Get.offAll(const DettagliFossile());},
                           icon: const Icon(Icons.arrow_circle_right_sharp,color:Color.fromRGBO(210, 180, 140, 1),size: 30,)),
                     ],),),),
             ),
@@ -141,7 +143,7 @@ class _FossilsTableState extends State<FossilsTable> {
           decoration: const InputDecoration(hintText: 'Ricerca fossili', hintStyle: TextStyle(color: Colors.black54,fontWeight: FontWeight.w400), border: InputBorder.none, prefixIcon: Icon(Icons.search, color: Colors.black54,),), style: const TextStyle(color: Colors.black54),),),);
     }
   void filtraLista(String text) {
-    List<FossilModel> listaCompleta = viewModel.fossilModel;
+    List<FossilModel> listaCompleta = FossilViewModel().fossilModel;
     List<FossilModel> listaFiltrata = [];
     for (int i = 0; i < listaCompleta.length; i++) {
       if (listaCompleta[i].nome.toString().toLowerCase().startsWith(
@@ -150,7 +152,7 @@ class _FossilsTableState extends State<FossilsTable> {
       }
     }
     setState(() {
-      lista = listaFiltrata;
+      fossili = listaFiltrata;
     });
   }
   @override
