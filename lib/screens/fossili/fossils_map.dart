@@ -23,7 +23,7 @@ class _FossilMapState extends State<FossilMap> {
   LatLng latLng = getLatLngFromSharedPrefs();
   late CameraPosition _initialCameraPosition;
   late MapboxMapController controller;
-  late List<CameraPosition> _kRestaurantsList;
+  late List<CameraPosition> _kFossilList;
   List<Map> carouselData = [];
   // Carousel related
 
@@ -52,7 +52,7 @@ class _FossilMapState extends State<FossilMap> {
             carouselData[index]['distance'], carouselData[index]['duration']));
 
     // initialize map symbols in the same order as carousel widgets
-    _kRestaurantsList = List<CameraPosition>.generate(
+    _kFossilList = List<CameraPosition>.generate(
         fossili.length,
             (index) => CameraPosition(
             target: getLatLngFromRestaurantData(carouselData[index]['index']),
@@ -62,7 +62,7 @@ class _FossilMapState extends State<FossilMap> {
   _addSourceAndLineLayer(int index, bool removeLayer) async {
     // Can animate camera to focus on the item
     controller.animateCamera(
-        CameraUpdate.newCameraPosition(_kRestaurantsList[index]));
+        CameraUpdate.newCameraPosition(_kFossilList[index]));
 
     // Add a polyLine between source and destination
     Map geometry = getGeometryFromSharedPrefs(carouselData[index]['index']);
@@ -103,7 +103,7 @@ class _FossilMapState extends State<FossilMap> {
   }
 
   _onStyleLoadedCallback() async {
-    for (CameraPosition _kRestaurant in _kRestaurantsList) {
+    for (CameraPosition _kRestaurant in _kFossilList) {
       await controller.addSymbol(
         SymbolOptions(
           geometry: _kRestaurant.target,

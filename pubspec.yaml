@@ -55,6 +55,8 @@ dependencies:
       url: https://github.com/781flyingdutchman/flutterlocation.git
       ref: V4
       path: packages/location
+  babylonjs_viewer: ^1.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +85,7 @@ flutter:
     - assets/icon/
     - assets/image/
     - assets/config/
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
