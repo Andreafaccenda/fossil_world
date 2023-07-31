@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
 import 'package:mapbox_navigator/ui/splash.dart';
@@ -18,7 +17,6 @@ void main() async {
   await Firebase.initializeApp();
   sharedPreferences = await SharedPreferences.getInstance();
   fossili = await viewmodel.fossilModel;
-  await dotenv.load(fileName: "assets/config/.env");
   runApp(const MyApp());
 }
 

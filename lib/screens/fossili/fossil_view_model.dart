@@ -26,4 +26,7 @@ class FossilViewModel extends GetxController {
       update();
     });
   }
+  updateFossil(FossilModel fossile) async{
+    await homeService.updateFossils(fossile);
+  }
 }

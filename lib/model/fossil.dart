@@ -1,5 +1,9 @@
+import 'package:mapbox_navigator/model/user_model.dart';
+
 class FossilModel{
   String? id, nome,descrizione,immagine,latitudine,longitudine;
+  //List<dynamic>? lista_user;
+
 
 
 

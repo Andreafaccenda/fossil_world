@@ -10,12 +10,12 @@ import 'login_view.dart';
 
 class AuthViewModel extends GetxController{
   FirebaseAuth _auth = FirebaseAuth.instance;
-  FireStoreUser _user = FireStoreUser();
+  final FireStoreUser _user = FireStoreUser();
 
   late List userList;
 
 
-  late String email , password , name;
+  late String email , password , nome;
 
 
 
@@ -118,7 +118,7 @@ class AuthViewModel extends GetxController{
   void saveUser(UserCredential user) async {
     await FireStoreUser().addUserToFireStore(UserModel(
       userId: user.user!.uid,
-      nome: name,
+      nome: nome,
       email: email,
       password: password,
     ));
@@ -159,5 +159,8 @@ class AuthViewModel extends GetxController{
     prefs.remove('email');
     prefs.remove('password');
   }
+
+
+
 
 }

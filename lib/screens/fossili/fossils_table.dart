@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,7 +8,9 @@ import 'package:mapbox_navigator/model/fossil.dart';
 import 'package:mapbox_navigator/screens/fossili/dettagli_fossile.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
 import '../../main.dart';
+import '../../model/user_model.dart';
 import '../../widgets/navbar.dart';
+import '../auth/auth_view_model.dart';
 
 
 class FossilsTable extends StatefulWidget {
@@ -21,10 +24,13 @@ class _FossilsTableState extends State<FossilsTable> {
 
   final viewModel = FossilViewModel();
   late List<FossilModel> lista_fossili;
+
   @override
   void initState() {
     super.initState();
     lista_fossili = fossili;
+  /*  lista_fossili[0].lista_user?.add('user2');
+    viewModel.updateFossil(lista_fossili[0]);*/
   }
 
   Widget cardButtons(IconData iconData, String label) {
@@ -125,7 +131,9 @@ class _FossilsTableState extends State<FossilsTable> {
                             cardButtons(Icons.location_on, 'Map'),
                             ],),),
                       const SizedBox(width: 27,),
-                      IconButton(onPressed: (){Get.to( DettagliFossile(model: lista_fossili[index]));},
+                      IconButton(onPressed: (){
+                        Get.to(
+                        DettagliFossile(model: lista_fossili[index]));},
                           icon: const Icon(Icons.arrow_circle_right_sharp,color:Color.fromRGBO(210, 180, 140, 1),size: 30,)),
                     ],),),),
             ),

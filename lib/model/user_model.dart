@@ -1,3 +1,5 @@
+import 'fossil.dart';
+
 class UserModel {
   String? userId, nome, email, password;
 
@@ -8,7 +10,7 @@ class UserModel {
       return;
     }
     userId = map['userId'];
-    nome = map['name'];
+    nome = map['nome'];
     email = map['email'];
     password=map['password'];
   }
@@ -16,7 +18,7 @@ class UserModel {
   toJson() {
     return {
       'userId': userId,
-      'name': nome,
+      'nome': nome,
       'email': email,
       'password': password,
     };
