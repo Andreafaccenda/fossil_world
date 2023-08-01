@@ -28,33 +28,13 @@ class _FossilsTableState extends State<FossilsTable> {
 
   final viewModel = FossilViewModel();
   late List<FossilModel> lista_fossili;
-  String _address = "";
 
   @override
   void initState() {
     super.initState();
     lista_fossili = fossili;
-    _getPlace();
   }
-  void _getPlace() async {
-    List<Placemark> newPlace = await placemarkFromCoordinates(double.parse(fossili[0].latitudine.toString()), double.parse(fossili[0].longitudine.toString()));
 
-    // this is all you need
-    Placemark placeMark  = newPlace[0];
-    String? subLocality = placeMark.subLocality;
-    String? locality = placeMark.locality;
-    String? street = placeMark.street;
-    String? administrativeArea = placeMark.administrativeArea;
-    String? postalCode = placeMark.postalCode;
-    String? country = placeMark.country;
-    String? address = "${street}, ${locality}, ${administrativeArea} ${postalCode}, ${country}";
-
-    print(address);
-
-    setState(() {
-      _address = address; // update _address
-    });
-  }
 
   Widget cardButtons(IconData iconData, String label) {
     return Container(

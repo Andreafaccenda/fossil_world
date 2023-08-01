@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../main.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/endpoint_card.dart';
@@ -31,11 +33,13 @@ class _PrepareRideState extends State<PrepareRide> {
 
   MapBoxNavigationViewController? _controller;
   late MapBoxOptions _navigationOption;
+  String? currentAddress = "";
 
   @override
   void initState() {
     super.initState();
     initialize();
+    _useCurrentAddress();
   }
 
   @override
@@ -114,22 +118,53 @@ class _PrepareRideState extends State<PrepareRide> {
           var wayPoints = <WayPoint>[];
 
           for(int i = 0;i < fossili.length;i++){
-            if(sourceController.text.toString() == fossili[i].indirizzo
-                || destinationController.text.toString() == fossili[i].indirizzo){
+            if(sourceController.text.toString() == fossili[i].indirizzo){
               final _start = WayPoint(
                   name: fossili[i].nome.toString(),
                   latitude: double.parse(fossili[i].latitudine.toString()),
                   longitude: double.parse(fossili[i].longitudine.toString()),
-                  isSilent: true);
-                  wayPoints.add(_start);
-
-            }
+                  isSilent: false);
+                  wayPoints.add(_start);}
           }
+          if(sourceController.text.toString() == currentAddress){
+            Position currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+            final _start = WayPoint(
+                name: 'location',
+                latitude: currentPosition.latitude,
+                longitude: currentPosition.longitude,
+                isSilent: false);
+            wayPoints.add(_start);}
+
+        for(int i = 0;i < fossili.length;i++) {
+          if (destinationController.text.toString() == fossili[i].indirizzo) {
+            final _destination = WayPoint(
+                name: fossili[i].nome.toString(),
+                latitude: double.parse(fossili[i].latitudine.toString()),
+                longitude: double.parse(fossili[i].longitudine.toString()),
+                isSilent: false);
+                wayPoints.add(_destination);}
+    }
+
           await MapBoxNavigation.instance
               .startNavigation(wayPoints: wayPoints);
 
         },
         label: const Text('Vai alla navigazione',style: TextStyle(color: Color.fromRGBO(210, 180, 140, 1)),)),
     );
+  }
+  _useCurrentAddress() async{
+    Position currentPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    await placemarkFromCoordinates(
+        currentPosition!.latitude, currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        currentAddress =
+        '${place.street}, ${place.subLocality},${place.subAdministrativeArea}, ${place.postalCode}';
+      });
+
+    }).catchError((e) {
+      debugPrint(e);
+    });
   }
 }

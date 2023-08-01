@@ -71,6 +71,7 @@ class _LocationFieldState extends State<LocationField> {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           placeholder: placeholderText,
           placeholderStyle: GoogleFonts.rubik(color: Colors.black54),
+
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(5)),
