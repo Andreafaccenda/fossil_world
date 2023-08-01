@@ -1,3 +1,5 @@
+import 'package:geocoding/geocoding.dart';
+
 String? validateEmail(String? value){
   if(value == null || value.isEmpty){
     return 'indirizzo email richiesto!';

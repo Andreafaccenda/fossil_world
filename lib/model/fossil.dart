@@ -1,14 +1,14 @@
 import 'package:mapbox_navigator/model/user_model.dart';
 
 class FossilModel{
-  String? id, nome,descrizione,immagine,latitudine,longitudine;
+  String? id, nome,descrizione,immagine,latitudine,longitudine,indirizzo;
   //List<dynamic>? lista_user;
 
 
 
 
   FossilModel({required this.id, required this.nome,required this.descrizione,required this.immagine,
-    required this.latitudine,required this.longitudine});
+    required this.latitudine,required this.longitudine,required indirizzo});
 
   FossilModel.fromJson(Map<dynamic, dynamic> map) {
     if (map == null) {
@@ -20,6 +20,7 @@ class FossilModel{
     immagine = map['immagine'];
     latitudine=map['latitudine'];
     longitudine=map['longitudine'];
+    indirizzo = map['indirizzo'];
   }
 
   toJson() {
@@ -30,6 +31,7 @@ class FossilModel{
       'descrizione': descrizione,
       'latitudine':latitudine,
       'longitudine':longitudine,
+      'indirizzo': indirizzo,
     };
   }
 }

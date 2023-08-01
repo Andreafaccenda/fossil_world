@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -40,7 +38,6 @@ class _SplashState extends State<Splash> {
     }
     if(!disabilita){Get.offAll(LoginView());}
   }
-
 
   @override
   Widget build(BuildContext context) {

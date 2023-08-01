@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:mapbox_navigator/model/fossil.dart';
 import 'package:mapbox_navigator/screens/fossili/dettagli_fossile.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
+import 'package:mapbox_navigator/screens/navigation/navigation_view.dart';
 import '../../main.dart';
 import '../../model/user_model.dart';
+import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
 import '../auth/auth_view_model.dart';
 
@@ -24,13 +28,32 @@ class _FossilsTableState extends State<FossilsTable> {
 
   final viewModel = FossilViewModel();
   late List<FossilModel> lista_fossili;
+  String _address = "";
 
   @override
   void initState() {
     super.initState();
     lista_fossili = fossili;
-  /*  lista_fossili[0].lista_user?.add('user2');
-    viewModel.updateFossil(lista_fossili[0]);*/
+    _getPlace();
+  }
+  void _getPlace() async {
+    List<Placemark> newPlace = await placemarkFromCoordinates(double.parse(fossili[0].latitudine.toString()), double.parse(fossili[0].longitudine.toString()));
+
+    // this is all you need
+    Placemark placeMark  = newPlace[0];
+    String? subLocality = placeMark.subLocality;
+    String? locality = placeMark.locality;
+    String? street = placeMark.street;
+    String? administrativeArea = placeMark.administrativeArea;
+    String? postalCode = placeMark.postalCode;
+    String? country = placeMark.country;
+    String? address = "${street}, ${locality}, ${administrativeArea} ${postalCode}, ${country}";
+
+    print(address);
+
+    setState(() {
+      _address = address; // update _address
+    });
   }
 
   Widget cardButtons(IconData iconData, String label) {
@@ -68,9 +91,12 @@ class _FossilsTableState extends State<FossilsTable> {
       drawer: const NavBar(),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        centerTitle: true,
-        title: const Text('Fossil World',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
-      ),
+        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),
+        actions: [
+          CircleAvatar(
+            backgroundColor: secondaryColor10LightTheme,
+            child: IconButton(onPressed: () {Get.to(const PrepareRide());},
+              icon: SvgPicture.asset("assets/icon/location.svg", height: 16, width: 16, color: secondaryColor40LightTheme,),),), const SizedBox(width: defaultPadding)],),
       body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(

@@ -3,17 +3,19 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:latlong2/latlong.dart';
-import '../../main.dart';
+import 'package:mapbox_navigator/main.dart';
+import 'package:mapbox_navigator/screens/navigation/navigation_view.dart';
+import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
 import '../ar_flutter/localAndWebObject.dart';
 import 'fossil_view_model.dart';
 
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
-const myPosition =LatLng(40.697488,-73.979681 );
-
 class FossilMap extends StatefulWidget {
 
   @override
@@ -30,6 +32,9 @@ class _FossilMapState extends State<FossilMap> {
   @override
   void initState() {
     super.initState();
+    for(int i = 0;i<fossili.length;i++){
+      _getPlace(double.parse(fossili[i].latitudine.toString()),double.parse(fossili[i].longitudine.toString()),i);
+    }
     _followOnLocationUpdate = FollowOnLocationUpdate.always;
     _followCurrentLocationStreamController = StreamController<double?>();
   }
@@ -39,6 +44,16 @@ class _FossilMapState extends State<FossilMap> {
     _followCurrentLocationStreamController.close();
     super.dispose();
   }
+  void _getPlace(double latitudine,double longitudine,int index) async {
+    List<Placemark> newPlace = await placemarkFromCoordinates(latitudine,longitudine);
+
+    // this is all you need
+    Placemark placeMark  = newPlace[0];
+    String? address = "${placeMark.street}, ${placeMark.locality}, "
+        "${placeMark.administrativeArea} ${placeMark.postalCode}, ${placeMark.country}";
+    fossili[index].indirizzo=address;
+    viewmodel.updateFossil(fossili[index]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +61,12 @@ class _FossilMapState extends State<FossilMap> {
       drawer: const NavBar(),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        centerTitle: true,
-        title: const Text('Fossil World',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
-      ),
+        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),
+        actions: [
+          CircleAvatar(
+            backgroundColor: secondaryColor10LightTheme,
+            child: IconButton(onPressed: () {Get.to(const PrepareRide());},
+              icon: SvgPicture.asset("assets/icon/location.svg", height: 16, width: 16, color: secondaryColor40LightTheme,),),), const SizedBox(width: defaultPadding)],),
       body:  SafeArea(
         child: WillPopScope(onWillPop: showExitDialog,
           child: Stack(
@@ -91,17 +109,13 @@ class _FossilMapState extends State<FossilMap> {
                     CurrentLocationLayer( // disable animation
                       followCurrentLocationStream:
                       _followCurrentLocationStreamController.stream,
-                      followOnLocationUpdate: _followOnLocationUpdate,
-
-                    ),
-                  ],
-                ),
-              ),
+                      followOnLocationUpdate: _followOnLocationUpdate,),],),),
             ],),),),
       floatingActionButton:  Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+
             onPressed: () {
               // Follow the location marker on the map when location updated until user interact with the map.
               setState(
@@ -111,13 +125,16 @@ class _FossilMapState extends State<FossilMap> {
             backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
             child: const Icon(Icons.my_location,color: Colors.white,), ),
           const SizedBox(height: 10,),
-          FloatingActionButton(onPressed: (){
+          FloatingActionButton(
+            heroTag:'fab1',
+            onPressed: (){
             Get.to(const LocalAndWebObjectsView());
           },backgroundColor: Colors.grey[300],
             child: Container(
               padding:  const EdgeInsets.all(10.0),
               child:  Image.asset('assets/icon/fossil_icon.png',scale: 0.2,),),
-          ),],),
+          ),
+        ],),
     );
   }
 
