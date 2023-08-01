@@ -9,7 +9,7 @@ class HomeManagement extends StatefulWidget {
 }
 
 class _HomeManagementState extends State<HomeManagement> {
-  final List<Widget> _pages = [FossilMap(),      FossilsTable()];
+  final List<Widget> _pages = [FossilMap(),const FossilsTable()];
   int _index = 0;
 
   @override
@@ -19,7 +19,7 @@ class _HomeManagementState extends State<HomeManagement> {
       bottomNavigationBar: BottomNavigationBar(
         elevation: 15,
         backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        selectedItemColor: Colors.white,
+        selectedItemColor: Colors.black54,
         showSelectedLabels: true,
         showUnselectedLabels: false,
         onTap: (selectedIndex) {
@@ -37,6 +37,5 @@ class _HomeManagementState extends State<HomeManagement> {
       ),
     );
   }
-
 }
 

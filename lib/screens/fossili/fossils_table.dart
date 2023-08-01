@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,10 +36,14 @@ class _FossilsTableState extends State<FossilsTable> {
     super.initState();
     lista_fossili = fossili;
   }
+  @override
+  void dispose() {
 
+    super.dispose();
+  }
 
   Widget cardButtons(IconData iconData, String label) {
-    return Container(
+    return SizedBox(
       width: 70,
       child: Padding(
         padding: const EdgeInsets.only(right: 10),
@@ -78,6 +84,7 @@ class _FossilsTableState extends State<FossilsTable> {
             child: IconButton(onPressed: () {Get.to(const PrepareRide());},
               icon: SvgPicture.asset("assets/icon/location.svg", height: 16, width: 16, color: secondaryColor40LightTheme,),),), const SizedBox(width: defaultPadding)],),
       body: SafeArea(
+        child: WillPopScope(onWillPop: showExitDialog,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(15),
@@ -93,10 +100,10 @@ class _FossilsTableState extends State<FossilsTable> {
               ),
             ),
           )),
-    ),);
+      ),),);
   }
   Widget _listViewFossils() {
-    return Container(
+    return SizedBox(
       height: 550,
       child: ListView.separated(
         itemCount: lista_fossili.length,
@@ -170,10 +177,24 @@ class _FossilsTableState extends State<FossilsTable> {
       lista_fossili = listaFiltrata;
     });
   }
-  @override
-  void dispose() {
 
-    super.dispose();
+  Future<bool> showExitDialog()async {
+    return await showDialog(barrierDismissible: false,context: context, builder: (context)=>
+        AlertDialog(shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              const Text('USCITA APP'),
+              Container(height: 50, width: 50, padding: const EdgeInsets.all(7), decoration: BoxDecoration(border: Border.all(color: Colors.white), shape: BoxShape.circle, color: const Color.fromRGBO(210, 180, 140, 1),),
+                child: Image.asset('assets/image/logo.png', height: 8, width: 8,),),
+            ],
+          ), content: const Text("Vuoi uscire dall'applicazione ?",),
+          actions: [
+            ElevatedButton(style: ElevatedButton.styleFrom( backgroundColor: Colors.white), onPressed: (){Navigator.of(context).pop(false);},
+              child: const Text("NO",style: TextStyle(color:Color.fromRGBO(210, 180, 140, 1) ),),),
+            ElevatedButton(style: ElevatedButton.styleFrom( backgroundColor: const Color.fromRGBO(210, 180, 140, 1)),
+                onPressed: (){exit(0);},
+                child: const Text("SI",style:TextStyle(color: Colors.white),))],));
   }
 }
 

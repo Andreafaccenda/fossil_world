@@ -132,7 +132,7 @@ class _FossilMapState extends State<FossilMap> {
           },backgroundColor: Colors.grey[300],
             child: Container(
               padding:  const EdgeInsets.all(10.0),
-              child:  Image.asset('assets/icon/fossil_icon.png',scale: 0.2,),),
+              child: const Icon(Icons.search,color:Color.fromRGBO(210, 180, 140, 1),),),
           ),
         ],),
     );
