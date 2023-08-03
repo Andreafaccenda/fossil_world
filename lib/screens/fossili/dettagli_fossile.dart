@@ -60,21 +60,11 @@ class _DettagliFossileState extends State<DettagliFossile> {
                     SizedBox(height: 10, width: width, child: ListView.builder(itemCount: 5, scrollDirection: Axis.horizontal, itemBuilder: (context,int key){return  const Icon(Icons.star, color: Colors.white, size: 16,);},),),
                     const SizedBox(height: 15,),
                     const Text("Descrizione:",style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.w900),),
-                    const SizedBox(height: 8,),
+                    const SizedBox(height: 2,),
                     Text(widget.model.descrizione.toString(),style: const TextStyle(color: Colors.white,fontWeight: FontWeight.normal,letterSpacing: 0.5,wordSpacing: 1.5),),
                     const SizedBox(height: 15,),
-                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                         const Text('Posizione:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900,
-                          color: Colors.black54,),),
-                        CupertinoButton(color: const Color.fromRGBO(210, 180, 140, 1), onPressed: () {
-                          //bottomSheet(context);
-                        },
-                        child: const Icon(Icons.location_on,color: Colors.black54,),),
-                      ],
-                    ),
-                    Text(' ${widget.model.indirizzo.toString()}',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.normal,letterSpacing: 0.5,wordSpacing: 1.5),),
+                    const Text("Posizione:",style: TextStyle(color: Colors.black54,fontSize: 16,fontWeight: FontWeight.w900),),
+                    const SizedBox(height: 2,),Text(' ${widget.model.indirizzo.toString()}',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.normal,letterSpacing: 0.5,wordSpacing: 1.5),),
                   ],
                 ),
               ),

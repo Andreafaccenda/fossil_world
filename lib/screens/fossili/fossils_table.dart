@@ -77,12 +77,7 @@ class _FossilsTableState extends State<FossilsTable> {
       drawer: const NavBar(),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),
-        actions: [
-          CircleAvatar(
-            backgroundColor: secondaryColor10LightTheme,
-            child: IconButton(onPressed: () {Get.to(const PrepareRide());},
-              icon: SvgPicture.asset("assets/icon/location.svg", height: 16, width: 16, color: secondaryColor40LightTheme,),),), const SizedBox(width: defaultPadding)],),
+        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),),
       body: SafeArea(
         child: WillPopScope(onWillPop: showExitDialog,
           child: SingleChildScrollView(

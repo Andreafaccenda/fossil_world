@@ -3,16 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapbox_navigator/main.dart';
+import 'package:mapbox_navigator/screens/ar_flutter/localAndWebObject.dart';
+import 'package:mapbox_navigator/screens/ar_flutter/objectsonplane.dart';
 import 'package:mapbox_navigator/screens/navigation/navigation_view.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
-import '../ar_flutter/localAndWebObject.dart';
 import 'fossil_view_model.dart';
 
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
@@ -61,12 +61,7 @@ class _FossilMapState extends State<FossilMap> {
       drawer: const NavBar(),
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),
-        actions: [
-          CircleAvatar(
-            backgroundColor: secondaryColor10LightTheme,
-            child: IconButton(onPressed: () {Get.to(const PrepareRide());},
-              icon: SvgPicture.asset("assets/icon/location.svg", height: 16, width: 16, color: secondaryColor40LightTheme,),),), const SizedBox(width: defaultPadding)],),
+        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),),
       body:  SafeArea(
         child: WillPopScope(onWillPop: showExitDialog,
           child: Stack(
@@ -115,7 +110,6 @@ class _FossilMapState extends State<FossilMap> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-
             onPressed: () {
               // Follow the location marker on the map when location updated until user interact with the map.
               setState(
@@ -128,12 +122,19 @@ class _FossilMapState extends State<FossilMap> {
           FloatingActionButton(
             heroTag:'fab1',
             onPressed: (){
-            Get.to(const LocalAndWebObjectsView());
-          },backgroundColor: Colors.grey[300],
-            child: Container(
-              padding:  const EdgeInsets.all(10.0),
-              child: const Icon(Icons.search,color:Color.fromRGBO(210, 180, 140, 1),),),
+            Get.to( const LocalAndWebObjectsView());
+          },backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
+              child: const Icon(Icons.search,color: Colors.white,),
           ),
+          const SizedBox(height: 10,),
+          FloatingActionButton(
+            heroTag: 'default FloatingActionButton tag',
+            onPressed: (){Get.to(const PrepareRide());},
+            backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
+            child: const Icon(Icons.navigation_outlined,color: Colors.white,),
+          ),
+
+
         ],),
     );
   }

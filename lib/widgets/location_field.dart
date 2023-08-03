@@ -62,7 +62,7 @@ class _LocationFieldState extends State<LocationField> {
 
   @override
   Widget build(BuildContext context) {
-    String placeholderText = widget.isDestination ? 'Da dove?' : 'Per dove?';
+    String placeholderText = widget.isDestination ? 'A: ' : 'Da: ';
     IconData? iconData = !widget.isDestination ? Icons.my_location : null;
     return Padding(
       padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10),

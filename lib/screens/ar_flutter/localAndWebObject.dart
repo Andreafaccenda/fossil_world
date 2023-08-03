@@ -1,11 +1,15 @@
 
 import 'dart:io';
 import 'package:ar_flutter_plugin/ar_flutter_plugin.dart';
+import 'package:ar_flutter_plugin/datatypes/config_planedetection.dart';
+import 'package:ar_flutter_plugin/datatypes/hittest_result_types.dart';
 import 'package:ar_flutter_plugin/datatypes/node_types.dart';
 import 'package:ar_flutter_plugin/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
+import 'package:ar_flutter_plugin/models/ar_anchor.dart';
+import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:ar_flutter_plugin/models/ar_node.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -25,8 +29,8 @@ class LocalAndWebObjectsView extends StatefulWidget {
 class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
   late ARSessionManager arSessionManager;
   late ARObjectManager arObjectManager;
+  ARAnchorManager? arAnchorManager;
   HttpClient? httpClient;
-
 
   //String localObjectReference;
   ARNode? catchObjectNode;
@@ -129,14 +133,13 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
   }
   Future<bool> dialog()async {
     return await showDialog(barrierDismissible: false,context: context, builder: (context) {
-      Future.delayed(const Duration(seconds: 20), () {
+      Future.delayed(const Duration(seconds: 15), () {
         onWebObjectAtButtonPressed();
         Navigator.of(context).pop(true);
       });
       return const Center(
-        child: CircularProgressIndicator(
-          color: Color.fromRGBO(210, 180, 140, 1),
-        ),
+        child:  CircularProgressIndicator(
+          color: Color.fromRGBO(210, 180, 140, 1),),
       );
     });
   }
@@ -149,4 +152,6 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
     await file.writeAsBytes(bytes);
     return file;
   }
+
+
 }

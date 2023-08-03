@@ -19,7 +19,7 @@ class _HomeManagementState extends State<HomeManagement> {
       bottomNavigationBar: BottomNavigationBar(
         elevation: 15,
         backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        selectedItemColor: Colors.black54,
+        selectedItemColor: Colors.white,
         showSelectedLabels: true,
         showUnselectedLabels: false,
         onTap: (selectedIndex) {
