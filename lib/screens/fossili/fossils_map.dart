@@ -8,11 +8,10 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapbox_navigator/main.dart';
-import 'package:mapbox_navigator/screens/ar_flutter/localAndWebObject.dart';
-import 'package:mapbox_navigator/screens/ar_flutter/objectsonplane.dart';
 import 'package:mapbox_navigator/screens/navigation/navigation_view.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
+import '../ar_flutter/onBording.dart';
 import 'fossil_view_model.dart';
 
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
@@ -67,7 +66,7 @@ class _FossilMapState extends State<FossilMap> {
           child: Stack(
             children: [
               SizedBox(
-                height: MediaQuery.of(context).size.height*0.81,
+               height: double.infinity,
                 child: FlutterMap(
                   options: MapOptions(
                     center: const LatLng(0, 0),
@@ -94,11 +93,7 @@ class _FossilMapState extends State<FossilMap> {
                     ),
                     MarkerLayer(
                       markers: [
-                        Marker(point: const LatLng(43.5037378, 13.124937099999986), builder: (context){
-                          return Container(
-                            child:  Image.asset('assets/icon/fossil_icon.png',scale: 0.4),
-                          );
-                        }),
+                        _getMarker(),
                       ],
                     ),
                     CurrentLocationLayer( // disable animation
@@ -107,8 +102,9 @@ class _FossilMapState extends State<FossilMap> {
                       followOnLocationUpdate: _followOnLocationUpdate,),],),),
             ],),),),
       floatingActionButton:  Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          const SizedBox(height: 123,),
           FloatingActionButton(
             onPressed: () {
               // Follow the location marker on the map when location updated until user interact with the map.
@@ -122,7 +118,7 @@ class _FossilMapState extends State<FossilMap> {
           FloatingActionButton(
             heroTag:'fab1',
             onPressed: (){
-            Get.to( const LocalAndWebObjectsView());
+            Get.to( Onbording());
           },backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
               child: const Icon(Icons.search,color: Colors.white,),
           ),
@@ -133,8 +129,6 @@ class _FossilMapState extends State<FossilMap> {
             backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
             child: const Icon(Icons.navigation_outlined,color: Colors.white,),
           ),
-
-
         ],),
     );
   }
@@ -156,5 +150,11 @@ class _FossilMapState extends State<FossilMap> {
             ElevatedButton(style: ElevatedButton.styleFrom( backgroundColor: const Color.fromRGBO(210, 180, 140, 1)),
                 onPressed: (){exit(0);},
                 child: const Text("SI",style:TextStyle(color: Colors.white),))],));
+  }
+
+  Marker _getMarker(){
+    return Marker(point: const LatLng(43.5037378, 13.124937099999986), builder: (context){
+      return Image.asset('assets/icon/fossil_icon.png',scale: 0.4);
+    });
   }
 }
