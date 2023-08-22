@@ -49,3 +49,5 @@ const Color mainText = Color(0xFF2E3E5C);
 const Color SecondaryText = Color(0xFF9FA5C0);
 const Color outline = Color(0xFFD0DBEA);
 const Color form = Color(0xFFFFFFFF);
+const Color tan = Color.fromRGBO(210,180,140,0);
+

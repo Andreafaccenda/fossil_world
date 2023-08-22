@@ -1,50 +1,50 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-import 'package:ar_flutter_plugin/ar_flutter_plugin.dart';
-import 'package:ar_flutter_plugin/datatypes/anchor_types.dart';
-import 'package:ar_flutter_plugin/datatypes/config_planedetection.dart';
-import 'package:ar_flutter_plugin/datatypes/hittest_result_types.dart';
-import 'package:ar_flutter_plugin/datatypes/node_types.dart';
-import 'package:ar_flutter_plugin/managers/ar_anchor_manager.dart';
+
 import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
-import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
+import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
+import 'package:ar_flutter_plugin/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_plugin/models/ar_anchor.dart';
-import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
-import 'package:ar_flutter_plugin/models/ar_node.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ar_flutter_plugin/ar_flutter_plugin.dart';
+import 'package:ar_flutter_plugin/datatypes/config_planedetection.dart';
+import 'package:ar_flutter_plugin/datatypes/node_types.dart';
+import 'package:ar_flutter_plugin/datatypes/hittest_result_types.dart';
+import 'package:ar_flutter_plugin/models/ar_node.dart';
+import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../widgets/costanti.dart';
 
-class LocalAndWebObjectsView extends StatefulWidget {
-  const LocalAndWebObjectsView({Key? key}) : super(key: key);
-
+class CloudAnchorWidget extends StatefulWidget {
+  CloudAnchorWidget({Key? key}) : super(key: key);
   @override
-  State<LocalAndWebObjectsView> createState() => _LocalAndWebObjectsViewState();
+  _CloudAnchorWidgetState createState() => _CloudAnchorWidgetState();
 }
 
-class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
-  late ARSessionManager arSessionManager;
-  late ARObjectManager arObjectManager;
+class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
+
+  ARSessionManager? arSessionManager;
+  ARObjectManager? arObjectManager;
   ARAnchorManager? arAnchorManager;
+  ARLocationManager? arLocationManager;
   HttpClient? httpClient;
-  bool comparso = true;
 
-  var distance;
-
-  ARNode? webObjectNode;
-  ARNode? starObjectNode;
-  late var webAnchors;
   List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
-
+  String lastUploadedAnchor = "";
   String location = "";
+  var distance;
+  late var webAnchors;
 
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
@@ -62,16 +62,17 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
       Placemark placeMark  = newPlace[0];
       String? address = "${placeMark.street}, ${placeMark.locality}, "
           "${placeMark.administrativeArea} ${placeMark.postalCode}, ${placeMark.country}";
-       setState(() {
-         location="Lat:${position?.latitude.toString()} \n Long:${position?.longitude.toString()}\n ${address.toString()}";
-       });
+      setState(() {
+        location="Lat:${position?.latitude.toString()} \n Long:${position?.longitude.toString()}\n ${address.toString()}";
+      });
     });
   }
+
 
   @override
   void dispose() {
     super.dispose();
-    arSessionManager.dispose();
+    arSessionManager!.dispose();
   }
 
   @override
@@ -81,6 +82,7 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
         child: SingleChildScrollView(
+          physics: const ScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -98,13 +100,13 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
               const Text('Posizione:',style: TextStyle(color: secondaryColor80LightTheme,fontWeight: FontWeight.w800,fontSize: 20),),
               Text(location.toString(),style: const TextStyle(color: secondaryColor80LightTheme,fontWeight: FontWeight.w300),),
               const SizedBox(height: 5,),
-               Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CupertinoButton(child: const Text('Calcola distanza'), onPressed: (){getDistance();}),
                   Text(distance.toString()),
                 ],
-                ),
+              ),
             ],
           ),
         ),
@@ -112,34 +114,35 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
     );
   }
 
-  void onARViewCreated(ARSessionManager arSessionManager,
+  void onARViewCreated(
+      ARSessionManager arSessionManager,
       ARObjectManager arObjectManager,
       ARAnchorManager arAnchorManager,
       ARLocationManager arLocationManager) {
     this.arSessionManager = arSessionManager;
     this.arObjectManager = arObjectManager;
     this.arAnchorManager = arAnchorManager;
+    this.arLocationManager = arLocationManager;
 
-    this.arSessionManager.onInitialize(
-        showFeaturePoints: false,
-        showPlanes: true,
-        customPlaneTexturePath: "assets/image/triangle.png",
-        showWorldOrigin: false,
-        handlePans: true,
-        handleRotation: true,
-        showAnimatedGuide: false
+    this.arSessionManager!.onInitialize(
+      showFeaturePoints: false,
+      showPlanes: true,
+      customPlaneTexturePath: "Images/triangle.png",
+      showWorldOrigin: false,
+      showAnimatedGuide: false
     );
-    this.arObjectManager.onInitialize();
+    this.arObjectManager!.onInitialize();
 
-    this.arSessionManager.onPlaneOrPointTap = onPlaneOrPointTapped;
+    this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
+    this.arObjectManager!.onNodeTap = onNodeTapped;
     httpClient = HttpClient();
     _downloadFile(
         "https://github.com/Andreafaccenda/fossil_world/blob/master/ammonite_science_zone_uk.glb?raw=true",
         "ammonite_science_zone_uk.glb");
     _downloadFile("https://github.com/Andreafaccenda/fossil_world/blob/master/gold_star.glb?raw=true",
         "gold_star.glb");
-
   }
+
 
   Future<void> onNodeTapped(List<String> nodeNames) async {
     var foregroundNode =
@@ -152,21 +155,21 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
     var singleHitTestResult = hitTestResults.firstWhere(
             (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     if (singleHitTestResult != null) {
-      var newAnchor = ARPlaneAnchor(
+       webAnchors=  ARPlaneAnchor(
           transformation: singleHitTestResult.worldTransform, ttl: 2);
-      bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newAnchor);
+      bool? didAddAnchor = await this.arAnchorManager!.addAnchor(webAnchors);
       if (didAddAnchor ?? false) {
-        this.anchors.add(newAnchor);
+        this.anchors.add(webAnchors);
         // Add note to anchor
         var newNode = ARNode(
             type: NodeType.fileSystemAppFolderGLB,
             uri: "ammonite_science_zone_uk.glb",
-            scale: Vector3(1, 1, 1),
-            position: Vector3(0.0, 0.0, 0.0),
+            scale: Vector3(2.5, 2.5, 2.5),
+            position: Vector3(0.0, 0.50, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0),
-            data: {"onTapText": "Ouch, that hurt!"});
+            data: {"onTapText": "Apri informazioni fossili"});
         bool? didAddNodeToAnchor =
-        await this.arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
+        await this.arObjectManager!.addNode(newNode, planeAnchor: webAnchors);
         if (didAddNodeToAnchor ?? false) {
           this.nodes.add(newNode);
         } else {
@@ -177,41 +180,16 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
       }
     }
   }
-
   getDistance() async {
 
     setState(() {
-      arSessionManager.getDistanceFromAnchor(webAnchors).then((value) =>
+      arSessionManager?.getDistanceFromAnchor(webAnchors).then((value) =>
       distance = value?.toStringAsFixed(3));
     });
-   /* if (double.parse(distance.toString()) <= 1.00) {
+    /* if (double.parse(distance.toString()) <= 1.00) {
       showCatchDialog();
     }*/
   }
-
-  Future<bool> showCatchDialog() async {
-    return await showDialog(
-        barrierDismissible: true, context: context, builder: (context) =>
-        AlertDialog(shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              const Text('Fossil World'),
-              Container(
-                height: 50,
-                width: 50,
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(border: Border.all(color: form),
-                  shape: BoxShape.circle,
-                  color: const Color.fromRGBO(210, 180, 140, 1),),
-                child: Image.asset(
-                  'assets/image/logo.png', height: 8, width: 8,),),
-            ],
-          ), content: const Text("Fossile catturato",),
-        ));
-  }
-
   Future<File> _downloadFile(String url, String filename) async {
     var request = await httpClient!.getUrl(Uri.parse(url));
     var response = await request.close();
@@ -223,45 +201,3 @@ class _LocalAndWebObjectsViewState extends State<LocalAndWebObjectsView> {
   }
 
 }
- /* Future<void> onWebObjectAtButtonPressed() async {
-
-    if (webObjectNode != null) {
-      arObjectManager.removeNode(webObjectNode!);
-      webObjectNode = null;
-    } else {
-      var newNode = ARNode(
-          type: NodeType.fileSystemAppFolderGLB,
-          uri:"ammonite_science_zone_uk.glb",
-          scale: Vector3(0.8, 0.8, 0.8),
-          position: Vector3(0.0, 0.0, 0.0),
-          rotation: Vector4(1.0, 0.0, 0.0, 0.0));
-      bool? didAddWebNode = await arObjectManager.addNode(newNode);
-      webObjectNode = (didAddWebNode!) ? newNode : null;
-    }
-    if (catchObjectNode != null) {
-      arObjectManager.removeNode(catchObjectNode!);
-      catchObjectNode = null;
-    } else {
-      var newNode = ARNode(
-          type: NodeType.webGLB,
-          uri:
-          "https://github.com/Andreafaccenda/fossil_world/blob/master/gold_star.glb?raw=true",
-          scale: Vector3(0.05, 0.05, 0.05),
-          position: Vector3(0.0, 0.15, 0.0));
-      bool? didAddWebNode = await arObjectManager.addNode(newNode);
-      catchObjectNode = (didAddWebNode!) ? newNode : null;
-    }
-  }
-  Future<bool> dialog()async {
-    return await showDialog(barrierDismissible: false,context: context, builder: (context) {
-      Future.delayed(const Duration(seconds: 15), () {
-        onWebObjectAtButtonPressed();
-        Navigator.of(context).pop(true);
-      });
-      return const Center(
-        child:  CircularProgressIndicator(
-          color: Color.fromRGBO(210, 180, 140, 1),),
-      );
-    });
-  }*/
-

@@ -47,7 +47,7 @@ class _HomeManagementState extends State<HomeManagement> {
                   unselectedItemColor: Colors.grey,
                   showSelectedLabels: true,
                   showUnselectedLabels: false,
-                  backgroundColor: Colors.black54,
+                  backgroundColor: Colors.black26,
                   currentIndex: _index,
                   onTap: (int index) {
                     setState(() {

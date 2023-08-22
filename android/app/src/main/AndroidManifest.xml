@@ -3,11 +3,18 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- This tag indicates that this application requires ARCore.  This results in the application
+         only being visible in the Google Play Store on devices that support ARCore. -->
+    <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
     <application
         android:label="Fossil World"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="com.google.android.ar.API_KEY"
+            android:value="AIzaSyA19CbYCWfPy-ISq-PrchOOqWkHfr_oD6A"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -34,5 +41,6 @@
          <meta-data
              android:name="flutterEmbedding"
              android:value="2" />
+        <meta-data android:name="com.google.ar.core" android:value="required" />
      </application>
  </manifest>

@@ -11,7 +11,6 @@ import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:mapbox_navigator/model/fossil.dart';
 import 'package:mapbox_navigator/screens/fossili/dettagli_fossile.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
-import 'package:mapbox_navigator/screens/navigation/navigation_view.dart';
 import '../../main.dart';
 import '../../model/user_model.dart';
 import '../../widgets/costanti.dart';

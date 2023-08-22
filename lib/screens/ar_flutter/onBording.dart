@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapbox_navigator/screens/ar_flutter/cloudAnchor.dart';
 import 'package:mapbox_navigator/screens/ar_flutter/localAndWebObject.dart';
 
 import '../../widgets/content_model.dart';
@@ -94,7 +94,7 @@ class _OnbordingState extends State<Onbording> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => LocalAndWebObjectsView(),
+                      builder: (_) => CloudAnchorWidget(),
                     ),
                   );
                 }

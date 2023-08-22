@@ -5,13 +5,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapbox_navigator/main.dart';
-import 'package:mapbox_navigator/screens/navigation/navigation_view.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
 import '../ar_flutter/onBording.dart';
+import '../navigation/navigation_view.dart';
 import 'fossil_view_model.dart';
 
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
@@ -66,7 +65,7 @@ class _FossilMapState extends State<FossilMap> {
           child: Stack(
             children: [
               SizedBox(
-               height: double.infinity,
+               height:double.infinity,
                 child: FlutterMap(
                   options: MapOptions(
                     center: const LatLng(0, 0),
@@ -104,7 +103,7 @@ class _FossilMapState extends State<FossilMap> {
       floatingActionButton:  Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: 123,),
+          const SizedBox(height: 150,),
           FloatingActionButton(
             onPressed: () {
               // Follow the location marker on the map when location updated until user interact with the map.
