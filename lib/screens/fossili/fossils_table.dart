@@ -8,14 +8,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:mapbox_navigator/model/fossil.dart';
 import 'package:mapbox_navigator/screens/fossili/dettagli_fossile.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
 import '../../main.dart';
-import '../../model/user_model.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
-import '../auth/auth_view_model.dart';
 
 
 class FossilsTable extends StatefulWidget {
@@ -75,8 +74,17 @@ class _FossilsTableState extends State<FossilsTable> {
       backgroundColor: Colors.grey[300],
       drawer: const NavBar(),
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),),
+        backgroundColor:  const Color.fromRGBO(210, 180, 140, 1),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10,top: 5,bottom: 5),
+          child: CircleAvatar(
+            backgroundColor: grey300,
+            child: Image.asset('assets/icon/icon_fossil.png',height: 35,width: 35),
+          ),
+        ),
+      centerTitle: true,
+      title: const Text('Elenco fossili',style: TextStyle(color: form,fontWeight: FontWeight.w300),),
+      ),
       body: SafeArea(
         child: WillPopScope(onWillPop: showExitDialog,
           child: SingleChildScrollView(

@@ -34,10 +34,10 @@ Widget searchListView(
                 FocusManager.instance.primaryFocus?.unfocus();
               },
 
-              leading: const SizedBox(
+              leading:  SizedBox(
                 height: double.infinity,
                 child: CircleAvatar(backgroundColor:Colors.white,
-                    child: Icon(Icons.map,color: Color.fromRGBO(210, 180, 140, 1),)),
+                  child: Image.asset('assets/icon/icon_fossil.png',height: 35,width: 35),),
               ),
               title: Text(fossili[index].nome.toString(),
                   style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.black54)),

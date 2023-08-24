@@ -2,8 +2,9 @@ import 'fossil.dart';
 
 class UserModel {
   String? userId, nome, email, password;
+  List<dynamic>? lista_fossili;
 
-  UserModel({required this.userId, required this.nome, required this.email, required this.password});
+  UserModel({required this.userId, required this.nome, required this.email, required this.password,required this.lista_fossili});
 
   UserModel.fromJson(Map<dynamic, dynamic> map) {
     if (map == null) {
@@ -13,6 +14,7 @@ class UserModel {
     nome = map['nome'];
     email = map['email'];
     password=map['password'];
+    lista_fossili=map['lista_fossili'];
   }
 
   toJson() {
@@ -21,6 +23,7 @@ class UserModel {
       'nome': nome,
       'email': email,
       'password': password,
+      'lista_fossili':lista_fossili,
     };
   }
 }

@@ -7,10 +7,10 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapbox_navigator/main.dart';
+import 'package:mapbox_navigator/screens/navigation.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
 import '../ar_flutter/onBording.dart';
-import '../navigation/navigation_view.dart';
 import 'fossil_view_model.dart';
 
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
@@ -57,9 +57,10 @@ class _FossilMapState extends State<FossilMap> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const NavBar(),
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-        title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme),),),
+      appBar: PreferredSize(
+      preferredSize: const Size.fromHeight(50.0),
+          child: AppBar(backgroundColor: const Color.fromRGBO(210, 180, 140, 1), centerTitle: true, title: const Text("Fossil World", style: TextStyle(color: secondaryColor5LightTheme,fontWeight: FontWeight.w300),),),
+      ),
       body:  SafeArea(
         child: WillPopScope(onWillPop: showExitDialog,
           child: Stack(
@@ -92,7 +93,10 @@ class _FossilMapState extends State<FossilMap> {
                     ),
                     MarkerLayer(
                       markers: [
-                        _getMarker(),
+                        _getMarker(0),
+                        _getMarker(1),
+                        _getMarker(2),
+                        _getMarker(3),
                       ],
                     ),
                     CurrentLocationLayer( // disable animation
@@ -119,14 +123,14 @@ class _FossilMapState extends State<FossilMap> {
             onPressed: (){
             Get.to( Onbording());
           },backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-              child: const Icon(Icons.search,color: Colors.white,),
+              child:  Image.asset('assets/image/icon_cattura.png',height: 30,)
           ),
           const SizedBox(height: 10,),
           FloatingActionButton(
             heroTag: 'default FloatingActionButton tag',
-            onPressed: (){Get.to(const PrepareRide());},
+            onPressed: (){Get.to(SampleNavigationApp());},
             backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
-            child: const Icon(Icons.navigation_outlined,color: Colors.white,),
+              child:  Image.asset('assets/image/icon_navigazione.png',height: 30,)
           ),
         ],),
     );
@@ -151,9 +155,9 @@ class _FossilMapState extends State<FossilMap> {
                 child: const Text("SI",style:TextStyle(color: Colors.white),))],));
   }
 
-  Marker _getMarker(){
-    return Marker(point: const LatLng(43.5037378, 13.124937099999986), builder: (context){
-      return Image.asset('assets/icon/fossil_icon.png',scale: 0.4);
-    });
+  Marker _getMarker(int i ){
+      return Marker(point:  LatLng(double.parse(fossili[i].latitudine.toString()),double.parse(fossili[i].longitudine.toString())), builder: (context){
+        return Image.asset('assets/icon/icon_fossil.png',scale: 0.4);
+      });
   }
 }

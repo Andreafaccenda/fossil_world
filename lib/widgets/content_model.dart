@@ -9,7 +9,7 @@ class UnbordingContent {
 List<UnbordingContent> contents = [
   UnbordingContent(
       title: 'Guida per la cattura dei fossili',
-      image: 'assets/icon/fossil_icon.png',
+      image: 'assets/image/quality.svg',
       discription: "Quando sarai nelle cordinate geografiche del fossili,ti apparirà un messaggio che ti comunicherà la presenza del fossile "
   ),
   UnbordingContent(

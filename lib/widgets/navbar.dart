@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:mapbox_navigator/main.dart';
 import 'package:mapbox_navigator/model/user_model.dart';
 import 'package:mapbox_navigator/screens/auth/login_view.dart';
 
@@ -18,7 +19,7 @@ class NavBar extends StatefulWidget {
 class _NavBarState extends State<NavBar> {
 
   final viewModel = AuthViewModel();
-  UserModel user = UserModel(userId: "", nome: "", email: "", password: "");
+  UserModel user = UserModel(userId: "", nome: "", email: "", password: "",lista_fossili: []);
 
   @override
   void initState() {
@@ -29,6 +30,9 @@ class _NavBarState extends State<NavBar> {
     var prefId = await viewModel.getIdSession();
     var user = await viewModel.getUserFormId(prefId);
     if (user != null) {setState(() {this.user=user;});}
+
+    user?.lista_fossili!.add(fossili[0].id);
+    viewModel.updateUser(user!);
   }
 
   @override

@@ -121,6 +121,7 @@ class AuthViewModel extends GetxController{
       nome: nome,
       email: email,
       password: password,
+      lista_fossili: [],
     ));
   }
 
@@ -161,6 +162,8 @@ class AuthViewModel extends GetxController{
   }
 
 
-
+  updateUser(UserModel user) async{
+    await _user.updateUsers(user);
+  }
 
 }

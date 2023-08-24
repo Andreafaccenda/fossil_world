@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../screens/navigation/navigation_view.dart';
 
 class LocationField extends StatefulWidget {
   final bool isDestination;
@@ -28,7 +27,8 @@ class _LocationFieldState extends State<LocationField> {
 
   _onChangeHandler(value) {
     // Set isLoading = true in parent
-    PrepareRide.of(context)?.isLoading = true;
+    //per la navigazione
+    //PrepareRide.of(context)?.isLoading = true;
 
     // Make sure that requests are not made
     // until 1 second after the typing stops

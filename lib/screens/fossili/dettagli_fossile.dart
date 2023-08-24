@@ -150,7 +150,7 @@ class _DettagliFossileState extends State<DettagliFossile> {
                           markers: [
                             Marker(point: LatLng(double.parse(widget.model.latitudine.toString()),double.parse(widget.model.longitudine.toString())), builder: (context){
                               return Container(
-                                child:  Image.asset('assets/icon/fossil_icon.png',scale: 0.4),
+                                child:   Image.asset('assets/icon/icon_fossil.png',scale: 0.4),
                               );
                             })
                           ],

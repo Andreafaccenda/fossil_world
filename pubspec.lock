@@ -288,10 +288,9 @@ packages:
   flutter_mapbox_navigation:
     dependency: "direct main"
     description:
-      name: flutter_mapbox_navigation
-      sha256: ce62accf6e012254e2f670b50983671948feaab4bd4af07e08b2e79615e5f366
-      url: "https://pub.dev"
-    source: hosted
+      path: "C:\\Users\\asus\\AndroidStudioProjects\\flutter_mapbox_navigation-master\\"
+      relative: false
+    source: path
     version: "0.1.9"
   flutter_spinkit:
     dependency: "direct main"

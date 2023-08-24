@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mapbox_navigator/screens/ar_flutter/cloudAnchor.dart';
-import 'package:mapbox_navigator/screens/ar_flutter/localAndWebObject.dart';
 
 import '../../widgets/content_model.dart';
 import '../../widgets/costanti.dart';
@@ -44,15 +44,16 @@ class _OnbordingState extends State<Onbording> {
               },
               itemBuilder: (_, i) {
                 return Padding(
-                  padding: const EdgeInsets.all(40),
+                  padding: const EdgeInsets.all(50),
                   child: Column(
                     children: [
                       const SizedBox(height: 20,),
                       Text(
                         contents[i].title,
                         style: const TextStyle(
+                          color: Colors.black54,
                           fontSize: 35,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -65,7 +66,7 @@ class _OnbordingState extends State<Onbording> {
                         ),
                       ),
                       const SizedBox(height: 60,),
-                      Image.asset(
+                      SvgPicture.asset(
                         contents[i].image,
                         height: 200,
                       ),
@@ -117,10 +118,10 @@ class _OnbordingState extends State<Onbording> {
     return Container(
       height: 10,
       width: currentIndex == index ? 25 : 10,
-      margin: EdgeInsets.only(right: 5),
+      margin: const EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: Theme.of(context).primaryColor,
+        color: black54,
       ),
     );
   }
