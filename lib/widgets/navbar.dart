@@ -8,6 +8,7 @@ import 'package:mapbox_navigator/model/user_model.dart';
 import 'package:mapbox_navigator/screens/auth/login_view.dart';
 
 import '../screens/auth/auth_view_model.dart';
+import '../screens/location.dart';
 
 class NavBar extends StatefulWidget {
   const NavBar({Key? key}) : super(key: key);
@@ -50,10 +51,10 @@ class _NavBarState extends State<NavBar> {
               ),
                 decoration: const BoxDecoration(color:  Color.fromRGBO(210, 180, 140, 1),),),
 
-              const ListTile(
-                leading: Icon(Icons.backpack,color: Colors.black54,size: 30,),
-                title: Text('Zaino',style: TextStyle(color: Colors.black54,fontSize: 15,fontWeight: FontWeight.bold),),
-                //onTap: () => print('Upload tapped'),
+               ListTile(
+                leading: const Icon(Icons.backpack,color: Colors.black54,size: 30,),
+                title: const Text('Zaino',style: TextStyle(color: Colors.black54,fontSize: 15,fontWeight: FontWeight.bold),),
+                onTap: () { Get.to(const Location());},
               ),
               const ListTile(
                 leading: Icon(Icons.workspace_premium,color: Colors.black54,size: 30,),

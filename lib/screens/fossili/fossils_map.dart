@@ -7,7 +7,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapbox_navigator/main.dart';
-import 'package:mapbox_navigator/screens/navigation.dart';
+import 'package:mapbox_navigator/screens/navigation/navigator.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/navbar.dart';
 import '../ar_flutter/onBording.dart';

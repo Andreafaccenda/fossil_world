@@ -65,8 +65,10 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
     StreamSubscription<Position> positionStream =
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) async {
+        setState(() {
           latitudine = position!.latitude.toString();
           longitudine= position!.longitude.toString();
+        });
       List<Placemark> newPlace = await placemarkFromCoordinates(position!.latitude,position!.longitude);
 
       // this is all you need

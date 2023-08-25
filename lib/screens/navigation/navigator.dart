@@ -5,14 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mapbox_navigator/widgets/costanti.dart';
-import 'package:mapbox_navigator/widgets/endpoint_card.dart';
-import '../../main.dart';
+import '../../../main.dart';
 import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart';
-
-import '../widgets/location_field.dart';
-import '../widgets/search_listview.dart';
 
 class SampleNavigationApp extends StatefulWidget {
   const SampleNavigationApp({super.key});
@@ -160,7 +155,7 @@ class _SampleNavigationAppState extends State<SampleNavigationApp> {
                                     .startNavigation(wayPoints: wayPoints,
                                     options: MapBoxOptions(
                                         mode: MapBoxNavigationMode.driving,
-                                        simulateRoute: true,
+                                        simulateRoute: false,
                                         language: "it",
                                         allowsUTurnAtWayPoints: true,
                                         units: VoiceUnits.metric));
