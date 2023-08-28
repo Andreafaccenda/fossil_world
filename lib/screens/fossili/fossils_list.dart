@@ -18,12 +18,12 @@ class FossilsList extends StatefulWidget {
 class _FossilsListState extends State<FossilsList> {
 
   final viewModel = FossilViewModel();
-  late List<FossilModel> lista;
+  late List<FossilModel> lista_fossili;
 
   @override
   void initState() {
     super.initState();
-    lista = fossili;
+    lista_fossili = fossili;
   }
   @override
   void dispose() {
@@ -57,7 +57,7 @@ class _FossilsListState extends State<FossilsList> {
     return SizedBox(
       height: 550,
       child: ListView.separated(
-        itemCount: lista.length,
+        itemCount: lista_fossili.length,
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
           return GestureDetector(
@@ -78,7 +78,7 @@ class _FossilsListState extends State<FossilsList> {
                       AspectRatio(aspectRatio: 1/1,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(25),
-                          child: Image.network(lista[index].immagine.toString(),
+                          child: Image.network(lista_fossili[index].immagine.toString(),
                             fit: BoxFit.cover,),
                         ),),
                       const SizedBox(width: 10 ,),
@@ -87,9 +87,9 @@ class _FossilsListState extends State<FossilsList> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(lista[index].nome.toString(),style: const TextStyle(color: Colors.black54,fontSize: 14,fontWeight: FontWeight.bold),),
+                            Text(lista_fossili[index].nome.toString(),style: const TextStyle(color: Colors.black54,fontSize: 14,fontWeight: FontWeight.bold),),
                             const SizedBox(height: 2,),
-                            Text("${lista[index]
+                            Text("${lista_fossili[index]
                                 .descrizione}",style: const TextStyle(color: Colors.black54,fontSize: 12,fontWeight: FontWeight.w500),),
                             const SizedBox(height: 5,),
                             cardButtons(Icons.location_on, 'Map'),
@@ -97,7 +97,7 @@ class _FossilsListState extends State<FossilsList> {
                       const SizedBox(width: 27,),
                       IconButton(onPressed: (){
                         Get.to(
-                        DettagliFossile(model: lista[index]));},
+                        DettagliFossile(model: lista_fossili[index]));},
                           icon: const Icon(Icons.arrow_circle_right_sharp,color:Color.fromRGBO(210, 180, 140, 1),size: 30,)),
                     ],),),),
             ),
@@ -125,7 +125,7 @@ class _FossilsListState extends State<FossilsList> {
       }
     }
     setState(() {
-      lista = listaFiltrata;
+      lista_fossili = listaFiltrata;
     });
   }
 
