@@ -17,6 +17,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView>{
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final viewModel = AuthViewModel();
+  bool _obscureText =true;
   TextEditingController _controllerEmail = new TextEditingController();
   TextEditingController _controllerPassword = new TextEditingController();
   TextEditingController _controllerResetPassword = new TextEditingController();
@@ -43,10 +44,19 @@ class _LoginViewState extends State<LoginView>{
                             Text('Benvenuto nel mondo dei fossili!', style: TextStyle(color: Colors.grey[700], fontSize: 16,),),
                             const SizedBox(height: 25),
                             Padding(padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                              child: TextFormField(style:const TextStyle(color: Colors.black38),controller: _controllerEmail, textInputAction: TextInputAction.next, validator: validateEmail, onSaved: (value) {controller.email = value!;}, decoration: InputDecoration(enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white),), focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade400),), fillColor: Colors.grey.shade200, filled: true, hintText: "Email", hintStyle: TextStyle(color: Colors.grey[500]),),),),
+                              child: TextFormField(style:const TextStyle(color: Colors.black38),controller: _controllerEmail, textInputAction: TextInputAction.next, validator: validateEmail, onSaved: (value) {controller.email = value!;},
+                                decoration: InputDecoration(
+                                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white),), focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade400),), fillColor: Colors.grey.shade200, filled: true, hintText: "Email", hintStyle: TextStyle(color: Colors.grey[500]),),),),
                             const SizedBox(height: 10),
                             Padding(padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                              child: TextFormField(style:const TextStyle(color: Colors.black38),controller: _controllerPassword, textInputAction: TextInputAction.next, validator: validatePassword, onSaved:(value) {controller.password=value!;}, decoration: InputDecoration(enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white),), focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade400),), fillColor: Colors.grey.shade200, filled: true, hintText: "Password", hintStyle: TextStyle(color: Colors.grey[500])),),),
+                              child: TextFormField(style:const TextStyle(color: Colors.black38),controller: _controllerPassword, textInputAction: TextInputAction.next, validator: validatePassword, onSaved:(value) {controller.password=value!;}, decoration: InputDecoration(
+                                  suffixIcon: GestureDetector(
+                                    onTap: () {_obscureText=!_obscureText;
+                                      },
+                                    child: Icon(_obscureText ? Icons.visibility: Icons.visibility_off,color: Colors.black38,),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white),), focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey.shade400),), fillColor: Colors.grey.shade200, filled: true, hintText: "Password", hintStyle: TextStyle(color: Colors.grey[500])),
+                                  obscureText: _obscureText),),
                             const SizedBox(height: 10),
                             Padding(padding: const EdgeInsets.symmetric(horizontal: 25.0),
                               child: GestureDetector(

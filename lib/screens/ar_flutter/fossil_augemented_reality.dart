@@ -18,20 +18,21 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:mapbox_navigator/screens/fossili/home_management.dart';
+import 'package:mapbox_navigator/screens/fossili/fossils_home.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../widgets/costanti.dart';
+import '../../widgets/flutter_map.dart';
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
 
-class CloudAnchorWidget extends StatefulWidget {
-  CloudAnchorWidget({Key? key}) : super(key: key);
+class ArWidget extends StatefulWidget {
+  ArWidget({Key? key}) : super(key: key);
   @override
-  _CloudAnchorWidgetState createState() => _CloudAnchorWidgetState();
+  _ArWidgetState createState() => _ArWidgetState();
 }
 
-class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
+class _ArWidgetState extends State<ArWidget> {
 
   ARSessionManager? arSessionManager;
   ARObjectManager? arObjectManager;
@@ -57,6 +58,7 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
     accuracy: LocationAccuracy.high,
     distanceFilter: 100,
   );
+
   @override
   void initState() {
     super.initState();
@@ -81,6 +83,7 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
     });
 
   }
+
 
   @override
   void dispose() {
@@ -207,34 +210,7 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
                                       padding: const EdgeInsets.all(20),
                                       child: SizedBox(
                                           height: 500,
-                                          child: FlutterMap(
-                                            options: MapOptions(
-                                              center: const LatLng(0, 0),
-                                              zoom: 15,
-                                              minZoom: 5,
-                                              maxZoom: 20,
-                                              // Stop following the location marker on the map if user interacted with the map.
-                                              onPositionChanged: (MapPosition position, bool hasGesture) {
-                                                if (hasGesture && _followOnLocationUpdate != FollowOnLocationUpdate.never) {
-                                                  setState(() => _followOnLocationUpdate = FollowOnLocationUpdate.never,);}},),
-                                            // ignore: sort_child_properties_last
-                                            children: [
-                                              TileLayer(
-                                                urlTemplate: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
-                                                additionalOptions: const  {
-                                                  'accessToken': MAPBOX_ACCESS_TOKEN,
-                                                  'id': 'mapbox/streets-v12',
-                                                },
-                                              ),
-                                              MarkerLayer(
-                                                markers: [
-                                                  _getMarker(),
-                                                ],
-                                              ),
-                                              CurrentLocationLayer( // disable animation
-                                                followCurrentLocationStream:
-                                                _followCurrentLocationStreamController.stream,
-                                                followOnLocationUpdate: _followOnLocationUpdate,),],),),
+                                          child: Mappa(followOnLocationUpdate: _followOnLocationUpdate,followCurrentLocationStreamController: _followCurrentLocationStreamController ,),),
                                       ),
                                   ],
                                 ),
@@ -409,7 +385,7 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
             ElevatedButton(style: ElevatedButton.styleFrom( backgroundColor: form), onPressed: (){onRemoveEverything();
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) {
-                  return HomeManagement();
+                  return FossilHome();
                 }));},
               child: const Text("NO",style: TextStyle(color:Color.fromRGBO(210, 180, 140, 1) ),),),
             ElevatedButton(style: ElevatedButton.styleFrom( backgroundColor: const Color.fromRGBO(210, 180, 140, 1)),
@@ -418,5 +394,4 @@ class _CloudAnchorWidgetState extends State<CloudAnchorWidget> {
                 Navigator.of(context).pop(false);},
                 child: const Text("SI",style:TextStyle(color: form),))],));
   }
-
 }

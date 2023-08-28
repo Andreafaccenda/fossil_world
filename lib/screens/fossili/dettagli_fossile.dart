@@ -1,15 +1,14 @@
 import 'dart:ui';
-
 import 'package:babylonjs_viewer/babylonjs_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-
 import '../../model/fossil.dart';
 import 'fossil_view_model.dart';
 
 
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
+
 class DettagliFossile extends StatefulWidget {
   FossilModel model;
   DettagliFossile({super.key, required this.model});

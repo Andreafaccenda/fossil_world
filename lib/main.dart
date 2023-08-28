@@ -2,9 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
+import 'package:mapbox_navigator/ui/hidden_drawer.dart';
 import 'package:mapbox_navigator/ui/splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'helpers/binding.dart';
 import 'model/fossil.dart';
 

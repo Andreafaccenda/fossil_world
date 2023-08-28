@@ -9,14 +9,14 @@ import 'package:mapbox_navigator/widgets/costanti.dart';
 import '../../../main.dart';
 import 'package:flutter_mapbox_navigation/flutter_mapbox_navigation.dart';
 
-class SampleNavigationApp extends StatefulWidget {
-  const SampleNavigationApp({super.key});
+class NavigationFossils extends StatefulWidget {
+  const NavigationFossils({super.key});
 
   @override
-  State<SampleNavigationApp> createState() => _SampleNavigationAppState();
+  State<NavigationFossils> createState() => _NavigationFossilsState();
 }
 
-class _SampleNavigationAppState extends State<SampleNavigationApp> {
+class _NavigationFossilsState extends State<NavigationFossils> {
   String? _instruction;
   TextEditingController _controllerDestination = new TextEditingController();
   Timer? searchOnStoppedTyping;

@@ -19,6 +19,30 @@ InputDecoration formDecoration(String labelText,IconData iconData) {
     ),
   );
 }
+
+Widget cardButtons(IconData iconData, String label) {
+  return SizedBox(
+    width: 70,
+    child: Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.all(5),
+          minimumSize: Size.zero,
+          backgroundColor: const Color.fromRGBO(210, 180, 140, 1),
+        ),
+        child: Row(
+          children: [
+            Icon(iconData, size: 16),
+            const SizedBox(width: 2),
+            Text(label)
+          ],
+        ),
+      ),
+    ),
+  );
+}
 const TextStyle style16Orange = TextStyle(
   color: Colors.orange,
   fontSize: 16,);

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mapbox_navigator/screens/ar_flutter/cloudAnchor.dart';
+import 'package:mapbox_navigator/screens/ar_flutter/fossil_augemented_reality.dart';
 
 import '../../widgets/content_model.dart';
 import '../../widgets/costanti.dart';
@@ -95,7 +95,7 @@ class _OnbordingState extends State<Onbording> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => CloudAnchorWidget(),
+                      builder: (_) => ArWidget(),
                     ),
                   );
                 }
