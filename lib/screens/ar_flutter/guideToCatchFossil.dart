@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapbox_navigator/screens/ar_flutter/fossil_augemented_reality.dart';
 
+import '../../model/fossil.dart';
 import '../../widgets/content_model.dart';
 import '../../widgets/costanti.dart';
+import 'cloudAnchorWidget.dart';
 
-class Onbording extends StatefulWidget {
+class GuideToCatchFossil extends StatefulWidget {
+  FossilModel model;
+  GuideToCatchFossil({super.key, required this.model});
   @override
-  _OnbordingState createState() => _OnbordingState();
+  _GuideToCatchFossilState createState() => _GuideToCatchFossilState();
 }
 
-class _OnbordingState extends State<Onbording> {
+class _GuideToCatchFossilState extends State<GuideToCatchFossil> {
   int currentIndex = 0;
   late PageController _controller;
 
@@ -31,6 +35,11 @@ class _OnbordingState extends State<Onbording> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        backgroundColor: marrone,
+        title: const Text('Guida',style: TextStyle(color: white,fontSize: 25,fontWeight: FontWeight.w800),),
+        centerTitle: true,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -44,31 +53,22 @@ class _OnbordingState extends State<Onbording> {
               },
               itemBuilder: (_, i) {
                 return Padding(
-                  padding: const EdgeInsets.all(50),
+                  padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 20),
                   child: Column(
                     children: [
                       const SizedBox(height: 20,),
                       Text(
-                        contents[i].title,
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontSize: 35,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
                         contents[i].discription,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey,
+                          fontSize: 16,
+                          color: Colors.black54,
                         ),
                       ),
-                      const SizedBox(height: 60,),
-                      SvgPicture.asset(
+                      const SizedBox(height: 50,),
+                      Image.asset(
                         contents[i].image,
-                        height: 200,
+                        height: MediaQuery.of(context).size.height*0.45,
                       ),
                     ],
                   ),
@@ -95,7 +95,7 @@ class _OnbordingState extends State<Onbording> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => ArWidget(),
+                      builder: (_) => CloudAnchorWidget(),
                     ),
                   );
                 }

@@ -1,11 +1,10 @@
-
-
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:latlong2/latlong.dart';
+import '../main.dart';
 const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
 
 class Mappa extends StatefulWidget {
@@ -28,6 +27,7 @@ class _MappaState extends State<Mappa> {
     widget.followOnLocationUpdate = FollowOnLocationUpdate.always;
     widget.followCurrentLocationStreamController = StreamController<double?>();
   }
+
   @override
   void dispose() {
     widget.followCurrentLocationStreamController.close();
@@ -44,9 +44,11 @@ class _MappaState extends State<Mappa> {
         maxZoom: 20,
         // Stop following the location marker on the map if user interacted with the map.
         onPositionChanged: (MapPosition position, bool hasGesture) {
-          if (hasGesture && widget.followOnLocationUpdate != FollowOnLocationUpdate.never) {
+          if (hasGesture &&
+              widget.followOnLocationUpdate != FollowOnLocationUpdate.never) {
             setState(
-                  () => widget.followOnLocationUpdate = FollowOnLocationUpdate.never,
+                  () =>
+              widget.followOnLocationUpdate = FollowOnLocationUpdate.never,
             );
           }
         },
@@ -55,29 +57,34 @@ class _MappaState extends State<Mappa> {
       children: [
         TileLayer(
           urlTemplate: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}',
-          additionalOptions: const  {
+          additionalOptions: const {
             'accessToken': MAPBOX_ACCESS_TOKEN,
             'id': 'mapbox/streets-v12',
           },
         ),
         MarkerLayer(
           markers: [
-            Marker(point:  LatLng(43.5037378,13.124937099999986), builder: (context){
-              return Image.asset('assets/icon/icon_fossil.png',scale: 0.4);
+            for(var fossile in fossili )Marker(point: LatLng(double.parse(fossile.latitudine.toString()),double.parse(fossile.longitudine.toString())),builder: (context){
+              return GestureDetector(onTap: (){
+                Tooltip(
+                  message: fossile.nome,
+                  triggerMode: TooltipTriggerMode.tap,
+                  child: Text(fossile.indirizzo.toString(),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black.withOpacity(0.6),
+                      )),
+                );
+              },
+                child: Image.asset('assets/icon/icon_fossil.png',scale: 0.4),);
             }),
           ],
         ),
         CurrentLocationLayer( // disable animation
           followCurrentLocationStream:
           widget.followCurrentLocationStreamController.stream,
-          followOnLocationUpdate: widget.followOnLocationUpdate,),],);
+          followOnLocationUpdate: widget.followOnLocationUpdate,),
+      ],);
   }
-  _getCurrentPosition(){
-      // Follow the location marker on the map when location updated until user interact with the map.
-      setState(
-            () => widget.followOnLocationUpdate = FollowOnLocationUpdate.always,);
-      // Follow the location marker on the map and zoom the map to level 18.
-      widget.followCurrentLocationStreamController.add(15);
-  }
-
 }
+

@@ -10,6 +10,7 @@ import '../model/user_model.dart';
 import '../screens/auth/auth_view_model.dart';
 import '../screens/fossili/fossils_home.dart';
 import '../screens/fossili/fossils_list.dart';
+import '../screens/fossili/fossil_bag.dart';
 
 class HiddenDrawer extends StatefulWidget {
   const HiddenDrawer({Key? key}) : super(key: key);
@@ -61,6 +62,16 @@ class _HiddenDrawerState extends State<HiddenDrawer> {
       ),
       ScreenHiddenDrawer(
         ItemHiddenMenu(
+          name: 'ZAINO',
+          baseStyle: defaultTextStyle,
+          selectedStyle: defaultTextStyle,
+          colorLineSelected: Colors.black54,
+        ),
+         const FossilBag(),
+      ),
+
+      ScreenHiddenDrawer(
+        ItemHiddenMenu(
           name: 'ESCI',
           onTap: () async {
             await viewModel.removeSession();
@@ -70,7 +81,7 @@ class _HiddenDrawerState extends State<HiddenDrawer> {
           selectedStyle: defaultTextStyle,
           colorLineSelected: Colors.black54,
         ),
-        FossilHome(),
+        const FossilHome(),
       ),
 
     ];

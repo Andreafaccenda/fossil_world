@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
@@ -14,20 +13,20 @@ import 'package:ar_flutter_plugin/datatypes/node_types.dart';
 import 'package:ar_flutter_plugin/datatypes/hittest_result_types.dart';
 import 'package:ar_flutter_plugin/models/ar_node.dart';
 import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:mapbox_navigator/screens/fossili/fossils_home.dart';
+import 'package:mapbox_navigator/model/user_model.dart';
+import 'package:mapbox_navigator/screens/auth/auth_view_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart';
 import 'package:geolocator/geolocator.dart';
+import '../../model/fossil.dart';
 import '../../widgets/costanti.dart';
-import '../../widgets/flutter_map.dart';
-const MAPBOX_ACCESS_TOKEN='pk.eyJ1IjoiZmFjYzAwIiwiYSI6ImNsam9kc3kzbDFtcHMzZXBqdWQ2YjNzeDcifQ.koA0RgNUY0hLmiOT6W1yqg';
+import '../../widgets/custom_dialog.dart';
+import '../fossili/fossils_list.dart';
 
 class ArWidget extends StatefulWidget {
-  ArWidget({Key? key}) : super(key: key);
+  FossilModel model;
+  ArWidget({super.key, required this.model});
   @override
   _ArWidgetState createState() => _ArWidgetState();
 }
@@ -38,57 +37,67 @@ class _ArWidgetState extends State<ArWidget> {
   ARObjectManager? arObjectManager;
   ARAnchorManager? arAnchorManager;
   ARLocationManager? arLocationManager;
+  final viewModel = AuthViewModel();
   HttpClient? httpClient;
-  late FollowOnLocationUpdate _followOnLocationUpdate;
-  late StreamController<double?> _followCurrentLocationStreamController;
-
+  late UserModel user;
   List<ARNode> nodes = [];
+  Distance distance = Distance();
   List<ARAnchor> anchors = [];
-  String latitudine = "";
-  String longitudine = "";
-  String location = "";
-  String distance = "5.00";
+  String distanza = "5.00";
+  double meter = 0.00;
+  late LatLng coordinate;
+  bool catturato = false;
   late var webAnchors;
-  bool readyToMap = false;
-  bool readyToCatch = false;
-  bool readyToInfo = false;
   List<dynamic> lista = [];
+  bool vicino = false;
 
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
-    distanceFilter: 100,
+    distanceFilter: 5,
   );
 
   @override
   void initState() {
     super.initState();
-    _followOnLocationUpdate = FollowOnLocationUpdate.always;
-    _followCurrentLocationStreamController = StreamController<double?>();
-    StreamSubscription<Position> positionStream =
-    Geolocator.getPositionStream(locationSettings: locationSettings)
-        .listen((Position? position) async {
-        setState(() {
-          latitudine = position!.latitude.toString();
-          longitudine= position!.longitude.toString();
-        });
-      List<Placemark> newPlace = await placemarkFromCoordinates(position!.latitude,position!.longitude);
-
-      // this is all you need
-      Placemark placeMark  = newPlace[0];
-      String? address = "${placeMark.street}, ${placeMark.locality}, "
-          " ${placeMark.administrativeArea}  ${placeMark.postalCode}, ${placeMark.country}";
-      setState(() {
-        location="  ${address.toString()}";
-      });
-    });
-
+    _isFossilNearly();
+    _getUser();
   }
-
 
   @override
   void dispose() {
     super.dispose();
     arSessionManager!.dispose();
+  }
+  _getUser()async{
+
+    var prefId = await viewModel.getIdSession();
+    user = (await viewModel.getUserFormId(prefId))!;
+    for(var id in user.lista_fossili ?? <String>[]){
+      if(id == widget.model.id){
+        setState(() {
+          catturato=true;
+        });
+      }
+    }
+  }
+  _isFossilNearly(){
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position? position) async {
+      setState(() {
+        meter = distance.as(
+            LengthUnit.Meter,
+            LatLng(position!.latitude, position!.longitude),LatLng(double.parse(widget.model.latitudine.toString()),double.parse(widget.model.longitudine.toString())));
+      });
+      if (meter < 10.00) {
+        setState(() {
+          vicino = true;
+        });
+      }else{
+        setState(() {
+          vicino = false;
+        });
+      }
+    });
   }
 
   @override
@@ -110,7 +119,7 @@ class _ArWidgetState extends State<ArWidget> {
           ),
         ),
         centerTitle: true,
-        title: const Text('Elenco fossili',style: TextStyle(color: form,fontWeight: FontWeight.w300),),
+        title: const Text('Cattura',style: TextStyle(color: white,fontWeight: FontWeight.bold,fontSize: 20),),
         actions: [
           CircleAvatar(
             backgroundColor: grey300,
@@ -147,107 +156,45 @@ class _ArWidgetState extends State<ArWidget> {
               const SizedBox(height: 20,),
               Row(mainAxisAlignment: MainAxisAlignment.center,
                 children:  [
-                  GestureDetector(onTap: () {setState(() {
-                    readyToMap=true;
-                    readyToCatch=false;
-                    readyToInfo=false;
-                  });},
-                    child: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(border: Border.all(color: secondaryColor5LightTheme), borderRadius: BorderRadius.circular(16), color: const Color.fromRGBO(210, 180, 140, 1),),
+                  Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: grey300,),
                       child:  Column(
                         children: [
-                          Image.asset('assets/image/icon_mappa.png',height: 30,),
+                          Image.asset('assets/image/location.png',height: 30,color: vicino ? green: red,),
                           const SizedBox(height: 5,),
-                          const Text('Mappa',style: TextStyle(color: form,fontSize: 10,fontWeight: FontWeight.w300),),
+                          Text('Coordinate',style: TextStyle(color: vicino ? green: red,fontSize: 10,fontWeight: FontWeight.w700),),
                         ],
-                      ),),),
+                      ),),
                   const SizedBox(width: 25),
-                  GestureDetector(onTap: () {setState(() {
-                    readyToMap=false;
-                    readyToCatch=true;
-                    readyToInfo=false;});
+                  GestureDetector(onTap: () {
                     getDistance();
                     },
-                    child: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(border: Border.all(color: secondaryColor5LightTheme), borderRadius: BorderRadius.circular(16), color: const Color.fromRGBO(210, 180, 140, 1),),
+                    child: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: grey300),
                       child:  Column(
                         children: [
                           Image.asset('assets/image/icon_cattura.png',height: 30,),
                           const SizedBox(height: 5,),
-                          const Text('Cattura',style: TextStyle(color: form,fontSize: 10,fontWeight: FontWeight.w300),),
+                           Text('Cattura',style: TextStyle(color: black54,fontSize: 10,fontWeight: FontWeight.w700),),
                         ],
                       ),),),
                   const SizedBox(width: 25),
-                  GestureDetector(onTap: () {setState(() {
-                    readyToMap=false;
-                    readyToCatch=false;
-                    readyToInfo=true;
-                  });},
-                    child: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(border: Border.all(color: secondaryColor5LightTheme), borderRadius: BorderRadius.circular(16), color: const Color.fromRGBO(210, 180, 140, 1),),
+                  GestureDetector(onTap: () {
+                    //bottom sheet
+                    showModalBottomSheet(context: context, backgroundColor: trasparent, isScrollControlled: true, builder: (context) =>
+                        customBottomSheet());
+                  },
+                    child: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: grey300,),
                       child:  Column(
                         children: [
                           Image.asset('assets/image/icon_informazioni.png',height: 30,),
                           const SizedBox(height: 5,),
-                          const Text('Legenda',style: TextStyle(color: form,fontSize: 10,fontWeight: FontWeight.w300),),
+                           Text('Legenda',style: TextStyle(color: black54,fontSize: 10,fontWeight: FontWeight.w700),),
                         ],
                       ),),),],),
-                 const SizedBox(height: 20,),
-                 Visibility(
-                            visible: readyToMap,
-                              child: Container(padding: const EdgeInsets.all(5), decoration: BoxDecoration(border: Border.all(color: secondaryColor5LightTheme), borderRadius: BorderRadius.circular(16),color: const Color.fromRGBO(210, 180, 140, 1), ),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(height: 10,),
-                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                           Icon(Icons.location_on,color: black54,),
-                                          Text(location,style:  TextStyle(color: black54,fontWeight: FontWeight.w300,fontSize: 12),),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: SizedBox(
-                                          height: 500,
-                                          child: Mappa(followOnLocationUpdate: _followOnLocationUpdate,followCurrentLocationStreamController: _followCurrentLocationStreamController ,),),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                 Visibility(
-                  visible: readyToInfo,
-                  child:  Container(padding: const EdgeInsets.all(5), decoration: BoxDecoration(border: Border.all(color: secondaryColor5LightTheme),
-                          borderRadius: BorderRadius.circular(16),color: const Color.fromRGBO(210, 180, 140, 1), ),
-                      child:  Column(
-                              children: [
-                                const SizedBox(height: 10,),
-                                const Text('LEGENDA:',style: TextStyle(color: form,fontWeight: FontWeight.w900),),
-                                Padding(padding: const EdgeInsets.all(20),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container( padding: const EdgeInsets.all(5), decoration: BoxDecoration(border: Border.all(color: secondaryColor5LightTheme), borderRadius: BorderRadius.circular(16),color: grey300, ),
-                                      child: Image.asset('assets/image/icon_star.png',height: 20,),
-                                    ),
-                                    const SizedBox(width: 10,),
-                                    const Text('Fossile già catturato',style: TextStyle(color: form,fontWeight: FontWeight.w300),)
-                                  ],
-                                ),
-                                ),
-                              ],),),
-              ),
             ],
           ),
         ),
       ),
     );
-  }
-  Marker _getMarker(){
-    return Marker(point: const LatLng(43.5037378, 13.124937099999986), builder: (context){
-      return Image.asset('assets/icon/icon_fossil.png',scale: 0.4);
-    });
   }
 
   void onARViewCreated(
@@ -277,6 +224,8 @@ class _ArWidgetState extends State<ArWidget> {
         "ammonite_science_zone_uk.glb");
     _downloadFile("https://github.com/Andreafaccenda/fossil_world/blob/master/gold_star.glb?raw=true",
         "gold_star.glb");
+    _downloadFile("https://github.com/Andreafaccenda/fossil_world/blob/master/interlocking_circles.glb?raw=true",
+        "interlocking_circles.glb");
   }
 
 
@@ -286,9 +235,6 @@ class _ArWidgetState extends State<ArWidget> {
     arSessionManager!.onError(foregroundNode.data!["onTapText"]);
   }
   Future<void> onRemoveEverything() async {
-    /*nodes.forEach((node) {
-      this.arObjectManager.removeNode(node);
-    });*/
     for (var anchor in anchors) {
       arAnchorManager!.removeAnchor(anchor);
     }
@@ -297,69 +243,86 @@ class _ArWidgetState extends State<ArWidget> {
 
   Future<void> onPlaneOrPointTapped(
       List<ARHitTestResult> hitTestResults) async {
-    var singleHitTestResult = hitTestResults.firstWhere(
-            (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
-    if (singleHitTestResult != null) {
-       webAnchors=  ARPlaneAnchor(
-          transformation: singleHitTestResult.worldTransform, ttl: 2);
-      bool? didAddAnchor = await arAnchorManager!.addAnchor(webAnchors);
-      if (didAddAnchor ?? false) {
-        anchors.add(webAnchors);
-        // Add note to anchor
-        var newNode = ARNode(
-            type: NodeType.fileSystemAppFolderGLB,
-            uri: "ammonite_science_zone_uk.glb",
-            scale: Vector3(2.5, 2.5, 2.5),
-            position: Vector3(0.0, 0.50, 0.0),
-            rotation: Vector4(1.0, 0.0, 0.0, 0.0),
-            data: {"onTapText": "Apri informazioni fossili"});
-        bool? didAddNodeToAnchor =
-        await arObjectManager!.addNode(newNode, planeAnchor: webAnchors);
-        if (didAddNodeToAnchor ?? false) {
-          nodes.add(newNode);
+      if(vicino) {
+        var singleHitTestResult = hitTestResults.firstWhere(
+                (hitTestResult) =>
+            hitTestResult.type == ARHitTestResultType.plane);
+        webAnchors = ARPlaneAnchor(transformation: singleHitTestResult.worldTransform, ttl: 2);
+        bool? didAddAnchor = await arAnchorManager!.addAnchor(webAnchors);
+        if (didAddAnchor ?? false) {
+          anchors.add(webAnchors);
+          // Add note to anchor
+          var newNode = ARNode(
+              type: NodeType.fileSystemAppFolderGLB,
+              uri: "ammonite_science_zone_uk.glb",
+              scale: Vector3(2.5, 2.5, 2.5),
+              position: Vector3(0.0, 0.50, 0.0),
+              rotation: Vector4(1.0, 0.0, 0.0, 0.0),
+              data: {"onTapText": "Apri informazioni fossili"});
+          bool? didAddNodeToAnchor =
+          await arObjectManager!.addNode(newNode, planeAnchor: webAnchors);
+          if (didAddNodeToAnchor ?? false) {
+            nodes.add(newNode);
+          } else {
+            arSessionManager!.onError("Adding Node to Anchor failed");
+          }
         } else {
-          arSessionManager!.onError("Adding Node to Anchor failed");
+          arSessionManager!.onError("Adding Anchor failed");
+        }
+        if (catturato) {
+          var catchNode = ARNode(
+              type: NodeType.fileSystemAppFolderGLB,
+              uri: "gold_star.glb",
+              scale: Vector3(0.2, 0.2, 0.2),
+              position: Vector3(0.0, 1.00, 0.0),
+              rotation: Vector4(1.0, 0.0, 0.0, 0.0),
+              data: {"onTapText": "Apri informazioni fossili"});
+          await arObjectManager!.addNode(catchNode, planeAnchor: webAnchors);
+        } else {
+          var catchNode = ARNode(
+              type: NodeType.fileSystemAppFolderGLB,
+              uri: "interlocking_circles.glb",
+              scale: Vector3(0.10, 0.10, 0.10),
+              position: Vector3(0.0, 1.00, 0.0),
+              rotation: Vector4(1.0, 0.0, 0.0, 0.0),
+              data: {"onTapText": "Apri informazioni fossili"});
+          await arObjectManager!.addNode(catchNode, planeAnchor: webAnchors);
+        }
+      }
+  }
+
+  getDistance() async {
+      setState(() {
+        arSessionManager?.getDistanceFromAnchor(webAnchors).then((value) =>
+        distanza = value!.toStringAsFixed(3));
+      });
+      if (double.parse(distanza.toString()) <= 2.00) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: customSnackBar('Fossile catturato', true),
+            behavior: SnackBarBehavior.floating,
+            elevation: 0,
+            backgroundColor: trasparent,
+          ),
+        );
+        onRemoveEverything();
+        if (!catturato) {
+          user.lista_fossili?.add(widget.model.id);
+          viewModel.updateUser(user);
+          setState(() {
+            catturato = true;
+          });
         }
       } else {
-        arSessionManager!.onError("Adding Anchor failed");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: customSnackBar('Devi avvicinarti ancora', false),
+            behavior: SnackBarBehavior.floating,
+            elevation: 0,
+            backgroundColor: trasparent,
+          ),
+        );
       }
-    }
-  }
-  getDistance() async {
-
-    setState(() {
-      arSessionManager?.getDistanceFromAnchor(webAnchors).then((value) =>
-      distance = value!.toStringAsFixed(3));
-    });
-     if (double.parse(distance.toString()) <= 1.50) {
-      showCatchDialog("Fossile catturato");
-      showExitDialog();
-    }else {
-       showCatchDialog("Devi avvicinarti ancora!");
-     }
-  }
-  Future<bool> showCatchDialog(String str) async {
-    return await showDialog(
-        barrierDismissible: true, context: context, builder: (context) =>
-        AlertDialog(
-          shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              const Text('Fossil World'),
-              Container(
-                height: 50,
-                width: 50,
-                padding: const EdgeInsets.all(7),
-                decoration: BoxDecoration(border: Border.all(color: form),
-                  shape: BoxShape.circle,
-                  color: const Color.fromRGBO(210, 180, 140, 1),),
-                child: Image.asset(
-                  'assets/image/logo.png', height: 8, width: 8,),),
-            ],
-          ), content:  Text(str,),
-        ));
   }
   Future<File> _downloadFile(String url, String filename) async {
     var request = await httpClient!.getUrl(Uri.parse(url));
@@ -369,29 +332,5 @@ class _ArWidgetState extends State<ArWidget> {
     File file = File('$dir/$filename');
     await file.writeAsBytes(bytes);
     return file;
-  }
-  Future<bool> showExitDialog()async {
-    return await showDialog(barrierDismissible: false,context: context, builder: (context)=>
-        AlertDialog(shape:  RoundedRectangleBorder(borderRadius: BorderRadius.circular(10),),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              const Text('FOSSIL WORLD'),
-              Container(height: 50, width: 50, padding: const EdgeInsets.all(7), decoration: BoxDecoration(border: Border.all(color: form), shape: BoxShape.circle, color: const Color.fromRGBO(210, 180, 140, 1),),
-                child: Image.asset('assets/image/logo.png', height: 8, width: 8,),),
-            ],
-          ), content: const Text("Vuoi continuare a catturare fossili?",style: TextStyle(fontWeight: FontWeight.w300),),
-          actions: [
-            ElevatedButton(style: ElevatedButton.styleFrom( backgroundColor: form), onPressed: (){onRemoveEverything();
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) {
-                  return FossilHome();
-                }));},
-              child: const Text("NO",style: TextStyle(color:Color.fromRGBO(210, 180, 140, 1) ),),),
-            ElevatedButton(style: ElevatedButton.styleFrom( backgroundColor: const Color.fromRGBO(210, 180, 140, 1)),
-                onPressed: (){
-                onRemoveEverything();
-                Navigator.of(context).pop(false);},
-                child: const Text("SI",style:TextStyle(color: form),))],));
   }
 }

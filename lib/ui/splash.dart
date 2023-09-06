@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:location/location.dart';
 import 'package:mapbox_navigator/screens/auth/login_view.dart';
+import '../helpers/directions_handler.dart';
+import '../main.dart';
 import '../screens/auth/auth_view_model.dart';
-
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
 
@@ -21,6 +25,7 @@ class _SplashState extends State<Splash> {
   void initState() {
     super.initState();
     autoLogin();
+    initializeLocationAndSave();
   }
 
   autoLogin() async {
@@ -29,7 +34,7 @@ class _SplashState extends State<Splash> {
       setState(() {
         disabilita=true;
       });
-      var user = await viewModel.getUserFormId(prefId);
+      var user = (await viewModel.getUserFormId(prefId))!;
       if (user != null) {
         viewModel.email= user.email!;
         viewModel.password = user.password!;
@@ -38,8 +43,38 @@ class _SplashState extends State<Splash> {
     }
     if(!disabilita){Get.offAll(LoginView());}
   }
+  void initializeLocationAndSave() async {
+    // Ensure all permissions are collected for Locations
+    Location _location = Location();
+    bool? _serviceEnabled;
+    PermissionStatus? _permissionGranted;
 
-  @override
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await _location.requestService();
+    }
+
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _location.requestPermission();
+    }
+
+    // Get capture the current user location
+    LocationData _locationData = await _location.getLocation();
+    LatLng currentLatLng = LatLng(_locationData.latitude!, _locationData.longitude!);
+
+    // Store the user location in sharedPreferences
+    sharedPreferences.setDouble('latitude', _locationData.latitude!);
+    sharedPreferences.setDouble('longitude', _locationData.longitude!);
+
+    // Get and store the directions API response in sharedPreferences
+    for (int i = 0; i < fossili.length; i++) {
+      Map modifiedResponse = await getDirectionsAPIResponse(currentLatLng, i);
+      saveDirectionsAPIResponse(i, json.encode(modifiedResponse));
+    }
+  }
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(

@@ -51,7 +51,9 @@ class _LoginViewState extends State<LoginView>{
                             Padding(padding: const EdgeInsets.symmetric(horizontal: 30.0),
                               child: TextFormField(style:const TextStyle(color: Colors.black38),controller: _controllerPassword, textInputAction: TextInputAction.next, validator: validatePassword, onSaved:(value) {controller.password=value!;}, decoration: InputDecoration(
                                   suffixIcon: GestureDetector(
-                                    onTap: () {_obscureText=!_obscureText;
+                                    onTap: () {setState(() {
+                                      _obscureText=!_obscureText;
+                                    });
                                       },
                                     child: Icon(_obscureText ? Icons.visibility: Icons.visibility_off,color: Colors.black38,),
                                   ),

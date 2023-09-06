@@ -1,9 +1,10 @@
 import 'dart:ui';
-import 'package:babylonjs_viewer/babylonjs_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import '../../model/fossil.dart';
+import '../../widgets/costanti.dart';
 import 'fossil_view_model.dart';
 
 
@@ -26,52 +27,21 @@ class _DettagliFossileState extends State<DettagliFossile> {
         child: Scaffold(
           body: Stack(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: double.infinity,
                 height: 350,
-                child: BabylonJSViewer(
-                  src: 'assets/image/ammonite_science_zone_uk.glb',
+                /*child: BabylonJSViewer(
+                  src: 'assets/image/ammonite_science_zone_uk.glb',*/
+            child: WebView(
+              initialUrl: 'https://app.vectary.com/p/6LgldENY7Kch7KwWlbEycm',
+              javascriptMode: JavascriptMode.unrestricted,
+            ),
                 ),
-              ),
               buttonArrow(context),
               scroll(),
             ],
           ),
         ));
-  }
-
-  buttonArrow(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: InkWell(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          height: 55,
-          width: 55,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              height: 55,
-              width: 55,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: const Icon(
-                Icons.arrow_back_ios,
-                size: 20,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   scroll() {

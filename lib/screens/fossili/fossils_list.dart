@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mapbox_navigator/model/fossil.dart';
+import 'package:mapbox_navigator/model/user_model.dart';
 import 'package:mapbox_navigator/screens/fossili/dettagli_fossile.dart';
 import 'package:mapbox_navigator/screens/fossili/fossil_view_model.dart';
 import '../../main.dart';
 import '../../widgets/costanti.dart';
 import '../../widgets/custom_dialog.dart';
+import 'fossil_polyline.dart';
+import '../ar_flutter/guideToCatchFossil.dart';
+import '../auth/auth_view_model.dart';
 
-
+late UserModel user;
 class FossilsList extends StatefulWidget {
   const FossilsList({Key? key}) : super(key: key);
 
@@ -18,13 +22,15 @@ class FossilsList extends StatefulWidget {
 class _FossilsListState extends State<FossilsList> {
 
   final viewModel = FossilViewModel();
-  late List<FossilModel> lista_fossili;
+  late List<FossilModel> lista;
+  final viewModelAuth = AuthViewModel();
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
-    lista_fossili = fossili;
+    lista = fossili;
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -55,9 +61,9 @@ class _FossilsListState extends State<FossilsList> {
   }
   Widget _listViewFossils() {
     return SizedBox(
-      height: 550,
+      height: 600,
       child: ListView.separated(
-        itemCount: lista_fossili.length,
+        itemCount: lista.length,
         scrollDirection: Axis.vertical,
         itemBuilder: (context, index) {
           return GestureDetector(
@@ -78,7 +84,7 @@ class _FossilsListState extends State<FossilsList> {
                       AspectRatio(aspectRatio: 1/1,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(25),
-                          child: Image.network(lista_fossili[index].immagine.toString(),
+                          child: Image.network(lista[index].immagine.toString(),
                             fit: BoxFit.cover,),
                         ),),
                       const SizedBox(width: 10 ,),
@@ -87,24 +93,64 @@ class _FossilsListState extends State<FossilsList> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(lista_fossili[index].nome.toString(),style: const TextStyle(color: Colors.black54,fontSize: 14,fontWeight: FontWeight.bold),),
+                            Text(lista[index].nome.toString(),style: const TextStyle(color: Colors.black54,fontSize: 14,fontWeight: FontWeight.bold),),
                             const SizedBox(height: 2,),
-                            Text("${lista_fossili[index]
+                            Text("${lista[index]
                                 .descrizione}",style: const TextStyle(color: Colors.black54,fontSize: 12,fontWeight: FontWeight.w500),),
                             const SizedBox(height: 5,),
-                            cardButtons(Icons.location_on, 'Map'),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                GestureDetector(onTap: () {
+                                  Get.to(FossilPolyline(model: lista[index]));
+                                },
+                                  child: Container(padding: const EdgeInsets.all(5), decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: white,),
+                                    child:  Column(
+                                      children: [
+                                        Image.asset('assets/image/icon_location.png',height: 30,color: black54,),
+                                      ],
+                                    ),),),
+                                const SizedBox(width: 15,),
+                                GestureDetector(onTap: () {
+                                  Get.to(GuideToCatchFossil(model: lista[index],));
+                                },
+                                  child: Container(padding: const EdgeInsets.all(5), decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: white,),
+                                    child:  Column(
+                                      children: [
+                                        Image.asset('assets/image/pickage.png',height: 30,),
+                                      ],
+                                    ),),),
+                              ],
+                            ),
                             ],),),
                       const SizedBox(width: 27,),
-                      IconButton(onPressed: (){
-                        Get.to(
-                        DettagliFossile(model: lista_fossili[index]));},
-                          icon: const Icon(Icons.arrow_circle_right_sharp,color:Color.fromRGBO(210, 180, 140, 1),size: 30,)),
+                      GestureDetector(onTap:() {Get.to(DettagliFossile(model: lista[index]));},
+                        child: Image.asset('assets/image/arrow.png',height: 30,color: black54,),
+                        ),
                     ],),),),
             ),
           );
         },
         separatorBuilder: (context, index) =>
             const SizedBox(width: 20,),),
+    );
+  }
+  Widget cardButtons(String path) {
+    return SizedBox(
+      width: 45,
+        child: ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            padding: const EdgeInsets.all(7),
+            minimumSize: Size.zero,
+            backgroundColor: marrone,
+          ),
+          child: Image.asset(path,height: 20,color: white,),
+        ),
+
     );
   }
   Widget searchText(){
@@ -125,7 +171,7 @@ class _FossilsListState extends State<FossilsList> {
       }
     }
     setState(() {
-      lista_fossili = listaFiltrata;
+      lista = listaFiltrata;
     });
   }
 
