@@ -186,6 +186,7 @@ class _ArWidgetState extends State<ArWidget> {
                       child:  Column(
                         children: [
                           Image.asset('assets/image/icon_informazioni.png',height: 30,),
+                           const
                            SizedBox(height: 5,),
                            Text('Legenda',style: TextStyle(color: black54,fontSize: 10,fontWeight: FontWeight.w700),),
                         ],
