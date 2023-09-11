@@ -219,7 +219,14 @@ class _ArWidgetState extends State<ArWidget> {
 
     this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
     this.arObjectManager!.onNodeTap = onNodeTapped;
-
+    httpClient = HttpClient();
+    _downloadFile(
+        "https://github.com/Andreafaccenda/fossil_world/blob/master/ammonite_science_zone_uk.glb?raw=true",
+        "ammonite_science_zone_uk.glb");
+    _downloadFile("https://github.com/Andreafaccenda/fossil_world/blob/master/gold_star.glb?raw=true",
+        "gold_star.glb");
+    _downloadFile("https://github.com/Andreafaccenda/fossil_world/blob/master/interlocking_circles.glb?raw=true",
+        "interlocking_circles.glb");
   }
 
 
