@@ -225,8 +225,7 @@ class _ArWidgetState extends State<ArWidget> {
         "ammonite_science_zone_uk.glb");
     _downloadFile("https://github.com/Andreafaccenda/fossil_world/blob/master/gold_star.glb?raw=true",
         "gold_star.glb");
-    _downloadFile("https://github.com/Andreafaccenda/fossil_world/blob/master/interlocking_circles.glb?raw=true",
-        "interlocking_circles.glb");
+
   }
 
 
