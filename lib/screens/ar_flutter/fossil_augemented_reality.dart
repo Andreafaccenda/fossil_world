@@ -219,7 +219,6 @@ class _ArWidgetState extends State<ArWidget> {
 
     this.arSessionManager!.onPlaneOrPointTap = onPlaneOrPointTapped;
     this.arObjectManager!.onNodeTap = onNodeTapped;
-    httpClient = HttpClient();
 
   }
 
